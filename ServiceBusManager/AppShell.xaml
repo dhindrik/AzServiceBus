@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="ServiceBusManager.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:ServiceBusManager.Views"
+    Shell.NavBarIsVisible="False"
+    FlyoutBehavior="Flyout"
+    Shell.ItemTemplate="{StaticResource MenuItemTemplate}"
+    Shell.MenuItemTemplate="{StaticResource MenuItemTemplate}"
+    FlyoutBackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}">
+    <Shell.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="MenuItemTemplate">
+                <Grid ColumnDefinitions="0.2*,0.8*" Padding="10">
+                    <Image Source="{Binding FlyoutIcon}"
+                       Margin="5"
+                       HeightRequest="30" />
+                    <Label Grid.Column="1"
+                       Text="{Binding Title}"
+                       FontSize="Medium"
+                       VerticalTextAlignment="Center" />
+                </Grid>
+            </DataTemplate>
+
+        </ResourceDictionary>
+
+    </Shell.Resources>
+
+    <ShellContent
+        Title="Connect"
+        ContentTemplate="{DataTemplate views:ConnectView}"
+        Route="Connect">
+        <ShellContent.FlyoutIcon>
+            <FontImageSource FontFamily="Icons"
+                                 Glyph="&#xF107;"
+                                 Size="22"
+                                 Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+
+        </ShellContent.FlyoutIcon>
+    </ShellContent>
+
+     <ShellContent
+        Title="Premium"
+        ContentTemplate="{DataTemplate views:PremiumView}"
+        Route="Premium">
+        <ShellContent.FlyoutIcon>
+            <FontImageSource FontFamily="Icons"
+                                 Glyph="&#xF720;"
+                                 Size="22"
+                                 Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+
+        </ShellContent.FlyoutIcon>
+    </ShellContent>
+
+    <MenuItem
+        Text="Feedback">
+        <MenuItem.IconImageSource>
+            <FontImageSource FontFamily="Icons"
+                                 Glyph="&#xF5DD;"
+                                 Size="22"
+                                 Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+
+        </MenuItem.IconImageSource>
+    </MenuItem>
+
+    <ShellContent
+        Title="About"
+        ContentTemplate="{DataTemplate views:AboutView}"
+        Route="About">
+        <ShellContent.FlyoutIcon>
+            <FontImageSource FontFamily="Icons"
+                                 Glyph="&#xF4AB;"
+                                 Size="22"
+                                 Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+
+        </ShellContent.FlyoutIcon>
+    </ShellContent>
+
+    <ShellContent
+        Title="Main"
+        ContentTemplate="{DataTemplate views:MainView}"
+        Route="MainViewModel"
+        Shell.FlyoutItemIsVisible="False" />
+
+</Shell>
+

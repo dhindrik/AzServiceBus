@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ServiceBusManager.Views.AboutView"
+            BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+    <Grid>
+
+        <Button Margin="0,20" HeightRequest="50" TextColor="White" HorizontalOptions="Start" VerticalOptions="Start" BackgroundColor="Transparent" Command="{Binding MenuCommand}">
+            <Button.ImageSource>
+                <FontImageSource FontFamily="Icons"
+                                 Glyph="&#xE86D;"
+                                 Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+            </Button.ImageSource>
+        </Button>
+
+        <Frame WidthRequest="500" HeightRequest="200" VerticalOptions="Center" HorizontalOptions="Center" BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}">
+            <Grid>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="About" FontSize="Title" />
+
+                    <Grid>
+                        <Label Text="App version" FontAttributes="Bold" />
+                        <Label HorizontalOptions="End" Text="1.0" />
+                    </Grid>
+                </VerticalStackLayout>
+                <HorizontalStackLayout Spacing="20" VerticalOptions="End" HorizontalOptions="End">
+                    <Button Text="Privacy Policy" />
+                    <Button Text="Source code" />
+
+                </HorizontalStackLayout>
+            </Grid>
+        </Frame>
+    </Grid>
+</ContentPage>

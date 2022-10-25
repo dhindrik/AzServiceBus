@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ServiceBusManager.Views.PremiumView"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+    <Grid>
+
+        <Button Margin="0,20" HeightRequest="50" TextColor="White" HorizontalOptions="Start" VerticalOptions="Start" BackgroundColor="Transparent" Command="{Binding MenuCommand}">
+            <Button.ImageSource>
+                <FontImageSource FontFamily="Icons"
+                                 Glyph="&#xE86D;"
+                                 Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+            </Button.ImageSource>
+        </Button>
+
+        <Frame WidthRequest="600" HeightRequest="600" VerticalOptions="Center" HorizontalOptions="Center" BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}">
+            <Grid>
+                <VerticalStackLayout Spacing="40">
+                    <Label Text="Premium" FontSize="Title" />
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Reasons to get premium:" FontSize="Medium" />
+                    <Grid ColumnDefinitions="40,*">
+                        <Image VerticalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource FontFamily="Icons"
+                                 Glyph="&#xF720;"
+                                 Size="22"
+                                 Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+                            </Image.Source>
+                        </Image>
+
+                        <Label Grid.Column="1" VerticalOptions="Center" Text="Get premium feeatures" />
+
+                    </Grid>
+
+                      <Grid ColumnDefinitions="40,*">
+                        <Image VerticalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource FontFamily="Icons"
+                                 Glyph="&#xF720;"
+                                 Size="22"
+                                 Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+                            </Image.Source>
+                        </Image>
+
+                        <Label Grid.Column="1" VerticalOptions="Center" Text="Support the development of the app" />
+
+                    </Grid>
+                        </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="10">
+                        <Label FontSize="Subtitle">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Premium - Lifetime" />
+                                    <Span Text=" - " />
+                                    <Span Text=" 300 kr" />
+                                </FormattedString>
+
+                            </Label.FormattedText>
+                        </Label>
+                        <Label Text="Get premium for lifetime" />
+
+                        <Button Text="Purchase Premium - Lifetime" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="10">
+                        <Label FontSize="Subtitle">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Premium - Subscription" />
+                                    <Span Text=" - " />
+                                    <Span Text="20 kr" />
+                                    <Span Text="/month | " />
+                                    <Span Text="200 kr" />
+                                    <Span Text="/year " />
+                                </FormattedString>
+
+                            </Label.FormattedText>
+                        </Label>
+                        <Label Text="Get premium for 1 month or 1 year. Subscription will auto-renew." />
+
+                        <Button Text="Purchase 1 month subscription" />
+                        <Button Text="Purchase 1 year subscription" />
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+            </Grid>
+        </Frame>
+    </Grid>
+</ContentPage>

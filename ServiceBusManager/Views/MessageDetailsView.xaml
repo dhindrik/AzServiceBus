@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ServiceBusManager.ViewModels"
+             x:Class="ServiceBusManager.Views.MessageDetailsView"
+             x:DataType="vm:MessageDetailsViewModel">
+    <Grid Padding="20" RowDefinitions="Auto,Auto, Auto, *" RowSpacing="20">
+        <Label Text="Message details" FontSize="Subtitle" VerticalOptions="Start" />
+        <Button Command="{Binding CloseCommand}" VerticalOptions="Start" HorizontalOptions="End" Text="X" />
+        <HorizontalStackLayout Grid.Row="1" Spacing="20">
+            <Button Text="Resend" Command="{Binding EditCommand}" IsVisible="{Binding IsDeadLetter}" />
+            <Button Text="Edit" Command="{Binding EditCommand}"  IsVisible="{Binding IsDeadLetter}" />
+            <Button Text="Remove" Command="{Binding RemoveCommand}" />
+        </HorizontalStackLayout>
+        <HorizontalStackLayout Grid.Row="2" Spacing="0">
+            <CheckBox Grid.Row="2" IsChecked="{Binding IsRaw}" VerticalOptions="Center" />
+            <Label VerticalOptions="Center" Text="Show raw message (json)" />
+        </HorizontalStackLayout>
+        <ScrollView Grid.Row="3">
+            <Grid>
+                <VerticalStackLayout Spacing="10" IsVisible="{Binding IsFormatted}">
+                    <Label Text="Message Id" Style="{StaticResource HeaderLabel}" />
+                    <Label Text="{Binding Item.MessageId}" />
+                    <Label Text="Enqueued Time" Style="{StaticResource HeaderLabel}" />
+                    <Label Text="{Binding Item.EnqueuedTime}" />
+                    <Label Text="Body" Style="{StaticResource HeaderLabel}" />
+                    <Editor MinimumHeightRequest="200" IsEnabled="{Binding IsEditMode}" Text="{Binding Body}" />
+                </VerticalStackLayout>
+                
+                <Editor MinimumHeightRequest="200" VerticalOptions="StartAndExpand" IsVisible="{Binding IsRaw}" Text="{Binding Raw}" />
+
+
+            </Grid>
+        </ScrollView>
+    </Grid>
+</ContentView>
+

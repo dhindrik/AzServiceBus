@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mvvm:TinyView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mvvm="clr-namespace:TinyMvvm;assembly=TinyMvvm.Maui"
+             xmlns:vm="clr-namespace:ServiceBusManager.ViewModels"
+             xmlns:models="clr-namespace:ServiceBusManager.Models"
+             x:Class="ServiceBusManager.Views.ConnectView"
+             x:DataType="vm:ConnectViewModel"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}"
+             Title="ConnectView">
+    <Grid>
+
+        <Button Margin="0,20" HeightRequest="50" TextColor="White" HorizontalOptions="Start" VerticalOptions="Start" BackgroundColor="Transparent" Command="{Binding MenuCommand}"> 
+            <Button.ImageSource>
+                <FontImageSource FontFamily="Icons"
+                                 Glyph="&#xE86D;"
+                                 Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+            </Button.ImageSource>
+            </Button>
+
+        <Frame WidthRequest="500" HeightRequest="500" BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}">
+            <Grid RowDefinitions="Auto,*" RowSpacing="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Connect to a Service Bus" FontSize="Title" />
+                    <Button Text="New Connection" Command="{Binding ToggleNewCommand, Mode=OneTime}" IsVisible="{Binding ShowConnections}" HorizontalOptions="Start" />
+                </VerticalStackLayout>
+
+                <ActivityIndicator Grid.Row="1" IsRunning="{Binding IsBusy}" />
+
+                <VerticalStackLayout Grid.Row="1" IsVisible="{Binding ShowNew}" Spacing="20">
+                    <Label Text="New Connection" FontSize="Subtitle" />
+                    <Label Text="To connect to a service bus, you need to add a connectionstring. You find the connection string in the Azure Portal." />
+                    <Entry Placeholder="Connection name" Text="{Binding Name}" />
+                    <Editor Placeholder="Connection string" HeightRequest="100" Text="{Binding ConnectionString}" />
+                    <HorizontalStackLayout Spacing="10" HorizontalOptions="End">
+                        <Button Text="Cancel" Command="{Binding ToggleNewCommand, Mode=OneTime}" />
+                        <Button Text="Connect" Command="{Binding ConnectToNewCommand, Mode=OneTime}" />
+                        <Button Text="Save and Connect" Command="{Binding SaveAndConnectToNewCommand, Mode=OneTime}" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+
+                <CollectionView x:Name="List" Grid.Row="1" ItemsSource="{Binding Connections}" IsVisible="{Binding ShowConnections}">
+                    <CollectionView.Header>
+                        <ContentView Padding="0,0,0,10">
+                        <Label Text="Connections" FontSize="Subtitle" />
+                            </ContentView>
+                    </CollectionView.Header>
+                    <CollectionView.EmptyView>
+                        <Label Text="No saved connections" />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:ConnectionInfo">
+                            <Grid>
+                                <Label Text="{Binding Name}" FontSize="Medium" HorizontalOptions="Start" />
+                                <Button Text="Connect" Command="{Binding Source={x:Reference List}, Path=BindingContext.ConnectToSavedCommand, Mode=OneTime}" CommandParameter="{Binding Value}" HorizontalOptions="End" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Frame>
+    </Grid>
+</mvvm:TinyView>
