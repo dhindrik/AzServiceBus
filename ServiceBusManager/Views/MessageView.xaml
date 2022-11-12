@@ -6,7 +6,9 @@
              xmlns:vm="clr-namespace:ServiceBusManager.ViewModels"
              x:Class="ServiceBusManager.Views.MessageView"
              BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}" x:DataType="vm:MessageViewModel">
-    <Grid x:Name="Content" BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}" Padding="20">
+    <Grid x:Name="MainContent"
+          BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}"
+          Padding="20">
         <Grid IsVisible="{Binding IsNotBusy}" RowDefinitions="Auto, Auto, Auto,*" RowSpacing="20">
             <Grid>
             <HorizontalStackLayout HorizontalOptions="Start" VerticalOptions="Center">

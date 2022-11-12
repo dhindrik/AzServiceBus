@@ -33,7 +33,7 @@
                     <Grid ColumnDefinitions="*, Auto, Auto" ColumnSpacing="10" Margin="0,10">
                         <Label Text="{Binding Name}" FontSize="Medium" VerticalOptions="Center" />
                         <Button Grid.Column="1" Text="Info" HeightRequest="30" VerticalOptions="Center" Command="{Binding Source={x:Reference QueuesAndTopics}, Path=BindingContext.OpenInfoCommand}" CommandParameter="{Binding Name}" />
-                        <Button Grid.Column="2" Text="Subscriptions" HeightRequest="30" VerticalOptions="Center" Command="{Binding Source={x:Reference QueuesAndTopics}, Path=BindingContext.OpenPeekCommand}" CommandParameter="{Binding Name}" />
+                        <Button Grid.Column="2" Text="Subscriptions" HeightRequest="30" VerticalOptions="Center" Command="{Binding Source={x:Reference QueuesAndTopics}, Path=BindingContext.OpenSubscriptionsCommand}" CommandParameter="{Binding Name}" />
                     </Grid>
                 </Frame>
             </ContentView>
@@ -82,6 +82,7 @@
             <views:MessageView Grid.Row="2" Grid.Column="2" IsVisible="{Binding ShowPeek}" QueueName="{Binding CurrentQueue}" />
             <views:MessageView Grid.Row="2" Grid.Column="2" IsVisible="{Binding ShowDeadLetters}" DeadLetterQueueName="{Binding CurrentDeadLetterQueue}" />
             <views:InfoView Grid.Row="2" Grid.Column="2" IsVisible="{Binding ShowInfo}" QueueName="{Binding CurrentQueue}" />
+            <views:SubscriptionsView Grid.Row="2" Grid.Column="2" IsVisible="{Binding ShowSubscriptions}" TopicName="{Binding CurrentQueue}" />
         </Grid>
 
         <ActivityIndicator IsRunning="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" />

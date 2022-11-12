@@ -74,6 +74,9 @@ public sealed partial class MainViewModel : ViewModel
     private bool showDetails;
 
     [ObservableProperty]
+    private bool showSubscriptions;
+
+    [ObservableProperty]
     private ObservableCollection<CollectionGroup<QueueOrTopic>> queues = new();
 
     [ObservableProperty]
@@ -100,6 +103,7 @@ public sealed partial class MainViewModel : ViewModel
         ShowInfo = true;
         ShowPeek = false;
         ShowDeadLetters = false;
+        ShowSubscriptions = false;
 
         CurrentQueue = queue;
     }
@@ -118,6 +122,7 @@ public sealed partial class MainViewModel : ViewModel
         ShowInfo = false;
         ShowPeek = true;
         ShowDeadLetters = false;
+        ShowSubscriptions = false;
     }
 
     [RelayCommand]
@@ -133,6 +138,24 @@ public sealed partial class MainViewModel : ViewModel
         ShowInfo = false;
         ShowPeek = false;
         ShowDeadLetters = true;
+        ShowSubscriptions = false;
+    }
+
+    [RelayCommand]
+    private void OpenSubscriptions(string? topic)
+    {
+        if (string.IsNullOrWhiteSpace(topic))
+        {
+            return;
+        }
+
+        CurrentQueue = topic;
+        currentQueueOrTopic = topic;
+
+        ShowInfo = false;
+        ShowPeek = false;
+        ShowDeadLetters = false;
+        ShowSubscriptions = true;
     }
 }
 

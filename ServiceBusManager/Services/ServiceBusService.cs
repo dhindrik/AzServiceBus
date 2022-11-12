@@ -4,9 +4,11 @@ public sealed class ServiceBusService : IServiceBusService
 {
     private ServiceBusClient? client;
     private ServiceBusAdministrationClient? adminClient;
+    private readonly ILogService logService;
 
-    public ServiceBusService()
+    public ServiceBusService(ILogService logService)
     {
+        this.logService = logService;
     }
 
     public async Task<QueueOrTopic> GetQueue(string name)
@@ -175,7 +177,7 @@ public sealed class ServiceBusService : IServiceBusService
         await receiver.DisposeAsync();
     }
 
-    public async Task Resend(string queueName, ServiceBusReceivedMessage message)
+    public async Task Resend(string queueName, ServiceBusReceivedMessage message, string? editedBody = null)
     {
         try
         {
@@ -194,10 +196,21 @@ public sealed class ServiceBusService : IServiceBusService
 
             var sender = client.CreateSender(queueName);
 
+            BinaryData body;
+
+            if(editedBody == null)
+            {
+                body = message.Body;
+            }
+            else
+            {
+                body = BinaryData.FromString(editedBody);
+            }
+
             var messageToAdd = new ServiceBusMessage()
             {
                 SessionId = message.SessionId,
-                Body = message.Body
+                Body = body
             };
 
             await sender.SendMessageAsync(messageToAdd);

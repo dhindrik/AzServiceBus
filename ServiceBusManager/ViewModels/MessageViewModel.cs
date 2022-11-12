@@ -1,7 +1,4 @@
-﻿using AVFoundation;
-using CommunityToolkit.Mvvm.Input;
-
-namespace ServiceBusManager.ViewModels;
+﻿namespace ServiceBusManager.ViewModels;
 
 public sealed partial class MessageViewModel : ViewModel
 {
@@ -32,17 +29,24 @@ public sealed partial class MessageViewModel : ViewModel
 
     public async Task LoadQueueMessages(string queueName, bool showDeadLetter = false)
     {
-        IsDeadLetter = showDeadLetter;
+        try
+        {
+            IsDeadLetter = showDeadLetter;
 
-        IsBusy = true;
+            IsBusy = true;
 
-        QueueName = queueName;
+            QueueName = queueName;
 
 
-        await LoadAndUpdate();
+            await LoadAndUpdate();
 
-        selectedMessages.Clear();
-        UpdateSelectedMessages();
+            selectedMessages.Clear();
+            UpdateSelectedMessages();
+        }
+        catch (Exception ex)
+        {
+            HandleException(ex);
+        }
 
 
         IsBusy = false;

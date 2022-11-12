@@ -5,7 +5,8 @@
             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
     <Grid>
 
-        <Button Margin="0,20" HeightRequest="50" TextColor="White" HorizontalOptions="Start" VerticalOptions="Start" BackgroundColor="Transparent" Command="{Binding MenuCommand}">
+        <Button Margin="0,20" HeightRequest="50" TextColor="White" HorizontalOptions="Start" VerticalOptions="Start" BackgroundColor="Transparent"
+                Command="{Binding MenuCommand}">
             <Button.ImageSource>
                 <FontImageSource FontFamily="Icons"
                                  Glyph="&#xE86D;"
@@ -22,10 +23,12 @@
                         <Label Text="App version" FontAttributes="Bold" />
                         <Label HorizontalOptions="End" Text="1.0" />
                     </Grid>
+
+                    <Label Text="This app is built using .NET MAUI." />
                 </VerticalStackLayout>
                 <HorizontalStackLayout Spacing="20" VerticalOptions="End" HorizontalOptions="End">
-                    <Button Text="Privacy Policy" />
-                    <Button Text="Source code" />
+                    <Button Text="Privacy Policy" Command="{Binding PrivacyCommand}" />
+                    <Button Text="Source code" Command="{Binding SourceCommand}" />
 
                 </HorizontalStackLayout>
             </Grid>

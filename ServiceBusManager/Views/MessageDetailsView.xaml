@@ -2,14 +2,15 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:ServiceBusManager.ViewModels"
+             xmlns:components="clr-namespace:ServiceBusManager.Components"
              x:Class="ServiceBusManager.Views.MessageDetailsView"
              x:DataType="vm:MessageDetailsViewModel">
     <Grid Padding="20" RowDefinitions="Auto,Auto, Auto, *" RowSpacing="20">
         <Label Text="Message details" FontSize="Subtitle" VerticalOptions="Start" />
         <Button Command="{Binding CloseCommand}" VerticalOptions="Start" HorizontalOptions="End" Text="X" />
         <HorizontalStackLayout Grid.Row="1" Spacing="20">
-            <Button Text="Resend" Command="{Binding EditCommand}" IsVisible="{Binding IsDeadLetter}" />
-            <Button Text="Edit" Command="{Binding EditCommand}"  IsVisible="{Binding IsDeadLetter}" />
+            <Button Text="Resend" Command="{Binding EditCommand}" IsVisible="{Binding IsEditMode}" />
+            <Button Text="Edit" Command="{Binding EditCommand}"  IsVisible="{Binding IsReadMode}" />
             <Button Text="Remove" Command="{Binding RemoveCommand}" />
         </HorizontalStackLayout>
         <HorizontalStackLayout Grid.Row="2" Spacing="0">
@@ -24,9 +25,20 @@
                     <Label Text="Enqueued Time" Style="{StaticResource HeaderLabel}" />
                     <Label Text="{Binding Item.EnqueuedTime}" />
                     <Label Text="Body" Style="{StaticResource HeaderLabel}" />
-                    <Editor MinimumHeightRequest="200" IsEnabled="{Binding IsEditMode}" Text="{Binding Body}" />
+
+                    <ContentView IsVisible="{Binding IsEditMode}"
+                                 Padding="20"
+                                 BackgroundColor="{AppThemeBinding Dark={StaticResource InputBackgroundDark}, Light={StaticResource InputBackgroundLight}}">
+                        
+                       <Editor Text="{Binding Body}" />
+                    </ContentView>
+                    <ContentView IsVisible="{Binding IsReadMode}">
+                        <Label Text="{Binding Body}" />
+
+                    </ContentView>
                 </VerticalStackLayout>
-                
+
+
                 <Editor MinimumHeightRequest="200" VerticalOptions="StartAndExpand" IsVisible="{Binding IsRaw}" Text="{Binding Raw}" />
 
 

@@ -54,7 +54,8 @@
     </ShellContent>
 
     <MenuItem
-        Text="Feedback">
+        Text="Feedback"
+        Command="{Binding FeedbackCommand}">
         <MenuItem.IconImageSource>
             <FontImageSource FontFamily="Icons"
                                  Glyph="&#xF5DD;"

@@ -2,10 +2,15 @@
 
 public partial class MessageDetailsView : ContentView
 {
-	public MessageDetailsView()
+    private readonly MessageDetailsViewModel? viewModel;
+
+    public MessageDetailsView()
 	{
 		InitializeComponent();
 
-		BindingContext = Resolver.Resolve<MessageDetailsViewModel>();
-	}
+		 viewModel = Resolver.Resolve<MessageDetailsViewModel>();
+
+        BindingContext = viewModel;
+
+    }
 }

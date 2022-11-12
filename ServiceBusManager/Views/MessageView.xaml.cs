@@ -9,7 +9,7 @@ public partial class MessageView
     public static BindableProperty QueueNameProperty = BindableProperty.Create(nameof(QueueName), typeof(string), typeof(MessageView), null, defaultBindingMode: BindingMode.TwoWay,
         propertyChanged: (bindable, oldValue, newValue) =>
     {
-        if (bindable is MessageView messageView  && messageView.Content.BindingContext is MessageViewModel viewModel && newValue is string queueName)
+        if (bindable is MessageView messageView  && messageView.MainContent.BindingContext is MessageViewModel viewModel && newValue is string queueName)
         {
             MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadQueueMessages(queueName));
         }
@@ -31,7 +31,7 @@ public partial class MessageView
 
         viewModel = Resolver.Resolve<MessageViewModel>();
 
-        Content.BindingContext = viewModel;
+        MainContent.BindingContext = viewModel;
     }
 
 

@@ -4,9 +4,12 @@ namespace ServiceBusManager.ViewModels;
 
 public sealed partial class MessageDetailsViewModel : ViewModel
 {
+    private readonly IServiceBusService serviceBusService;
+
     public MessageDetailsViewModel(IServiceBusService serviceBusService)
     {
         this.serviceBusService = serviceBusService;
+
     }
 
     [ObservableProperty]
@@ -19,7 +22,10 @@ public sealed partial class MessageDetailsViewModel : ViewModel
     private bool isRaw;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsReadMode))]
     private bool isEditMode;
+
+    public bool IsReadMode => !isEditMode;
 
     [ObservableProperty]
     private bool isDeadLetter;
@@ -29,8 +35,6 @@ public sealed partial class MessageDetailsViewModel : ViewModel
 
     [ObservableProperty]
     private string? body;
-
-    private readonly IServiceBusService serviceBusService;
 
     public void LoadMessage(ServiceBusReceivedMessage message, bool isDeadLetterQueue)
     {
@@ -44,6 +48,8 @@ public sealed partial class MessageDetailsViewModel : ViewModel
         Raw = json;
 
         Body = message.Body.ToString();
+
+       
     }
 
     [RelayCommand]
@@ -73,7 +79,15 @@ public sealed partial class MessageDetailsViewModel : ViewModel
             return;
         }
 
-        Task.Run(async () => await serviceBusService.Resend(currentQueueOrTopic, Item));
+        if(isEditMode)
+        {
+
+        }
+        else
+        {
+            Task.Run(async () => await serviceBusService.Resend(currentQueueOrTopic, Item));
+        }
+        
 
         Close();
     }

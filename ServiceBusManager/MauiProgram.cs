@@ -2,6 +2,8 @@
 global using System.Windows.Input;
 global using System.Collections.ObjectModel;
 
+global using Microsoft.AspNetCore.Components.WebView.Maui;
+
 global using ServiceBusManager.Models;
 global using ServiceBusManager.Services;
 global using ServiceBusManager.ViewModels;
@@ -13,6 +15,7 @@ global using Azure.Messaging.ServiceBus.Administration;
 global using TinyMvvm;
 global using CommunityToolkit.Mvvm;
 global using CommunityToolkit.Mvvm.ComponentModel;
+global using CommunityToolkit.Mvvm.Input;
 
 
 namespace ServiceBusManager;
@@ -35,7 +38,13 @@ public static class MauiProgram
 
 		RegisterRoutes();
 
-		var mauiApp = builder.Build();
+        builder.Services.AddMauiBlazorWebView();
+#if DEBUG
+        builder.Services.AddBlazorWebViewDeveloperTools();
+#endif
+
+
+        var mauiApp = builder.Build();
 
 		Resolver.Init(mauiApp.Services);
 
@@ -44,6 +53,8 @@ public static class MauiProgram
 
 	private static void RegisterServices(this MauiAppBuilder builder)
     {
+        builder.Services.AddSingleton<ILogService, AppCenterLogService>();
+
 		builder.Services.AddSingleton<IServiceBusService, ServiceBusService>();
 
 #if DEBUG
@@ -59,6 +70,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<InfoViewModel>();
         builder.Services.AddSingleton<ShellViewModel>();
         builder.Services.AddSingleton<PremiumViewModel>();
+        builder.Services.AddSingleton<AboutViewModel>();
+        builder.Services.AddSingleton<SubscriptionsViewModel>();
 
         builder.Services.AddSingleton<ConnectView>();
         builder.Services.AddSingleton<MainView>();
