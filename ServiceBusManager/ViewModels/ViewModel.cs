@@ -11,6 +11,7 @@ public partial class ViewModel : TinyViewModel
     private static Dictionary<string, Action<object>> ParameterActions { get; } = new Dictionary<string, Action<object>>();
 
     protected static string? currentQueueOrTopic;
+    protected static bool? hasPremium;
 
     public ViewModel()
     {
@@ -21,11 +22,21 @@ public partial class ViewModel : TinyViewModel
             throw new NullReferenceException("ILogService need to be added to IoC container");
         }
 
+        _ = Task.Run(() =>
+        {
+            var service = Resolver.Resolve<IFeatureService>();
+            hasPremium = service?.HasFeature(Constants.Features.Premium);
+
+            MainThread.BeginInvokeOnMainThread(() => OnPropertyChanged(nameof(hasPremium)));
+        });
+
         logService = log;
     }
 
     [ObservableProperty]
     private ObservableCollection<ConnectionInfo> connections = new();
+
+    public bool HasPremium => hasPremium.HasValue ? hasPremium.Value : false;
 
     protected void HandleException(Exception ex)
     {

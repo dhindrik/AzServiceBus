@@ -5,8 +5,8 @@ public interface IServiceBusService
     Task Init(string connectionString);
     Task<List<QueueOrTopic>> GetQueues();
     Task<QueueOrTopic> GetQueue(string name);
-    Task<List<ServiceBusReceivedMessage>> Peek(string queueName);
-    Task<List<ServiceBusReceivedMessage>> PeekDeadLetter(string queueName);
+    Task<List<ServiceBusReceivedMessage>> Peek(string queueName, string? topicName = null);
+    Task<List<ServiceBusReceivedMessage>> PeekDeadLetter(string queueName, string? topicName = null);
     Task AddToDeadLetter(string queueName, ServiceBusReceivedMessage message);
     Task Resend(string queueName, ServiceBusReceivedMessage message, string? editedBody = null);
     Task<string> GetNamepspace();

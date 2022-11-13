@@ -1,6 +1,6 @@
 ﻿namespace ServiceBusManager.ViewModels;
 
-public partial class SubscriptionsViewModel : ViewModel
+public sealed partial class SubscriptionsViewModel : ViewModel
 {
     private readonly IServiceBusService serviceBusService;
 
@@ -13,7 +13,7 @@ public partial class SubscriptionsViewModel : ViewModel
     private string? topicName;
 
     [ObservableProperty]
-    private ObservableCollection<Subscription> items = new ();
+    private ObservableCollection<Subscription> items = new();
 
     public async Task LoadSubscriptions(string topic)
     {
@@ -43,9 +43,31 @@ public partial class SubscriptionsViewModel : ViewModel
         IsBusy = false;
     }
 
+    [RelayCommand]
+    private void Peek(Subscription subscription)
+    {
+        if (subscription.Name == null)
+        {
+            return;
+        }
+
+        RunAction("OpenPeek", subscription.Name);
+    }
+
+    [RelayCommand]
+    private void DeadLetters(Subscription subscription)
+    {
+        if (subscription.Name == null)
+        {
+            return;
+        }
+
+        RunAction("DeadLetters", subscription.Name);
+    }
+
     private async Task LoadData()
     {
-        if(TopicName == null)
+        if (TopicName == null)
         {
             return;
         }

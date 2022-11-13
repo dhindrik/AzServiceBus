@@ -54,6 +54,7 @@ public static class MauiProgram
 	private static void RegisterServices(this MauiAppBuilder builder)
     {
         builder.Services.AddSingleton<ILogService, AppCenterLogService>();
+        builder.Services.AddSingleton<IFeatureService, FeatureService>();
 
 		builder.Services.AddSingleton<IServiceBusService, ServiceBusService>();
 

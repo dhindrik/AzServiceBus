@@ -91,6 +91,8 @@ public sealed partial class MainViewModel : ViewModel
     [ObservableProperty]
     private string? currentDeadLetterQueue;
 
+    [ObservableProperty]
+    private string? currentTopic;
 
     [RelayCommand]
     private void OpenInfo(string? queue)
@@ -149,8 +151,19 @@ public sealed partial class MainViewModel : ViewModel
             return;
         }
 
-        CurrentQueue = topic;
-        currentQueueOrTopic = topic;
+        AddAction("OpenPeek", (topic) => {
+            OpenPeek($"{CurrentTopic}/{topic.ToString()}");
+
+            RemoveAction("OpenPeek");
+        });
+
+        AddAction("OpenDeadLetters", (topic) => {
+            OpenDeadLetters($"{CurrentTopic}/{topic.ToString()}");
+
+            RemoveAction("OpenDeadLetters");
+        });
+
+        CurrentTopic = topic;
 
         ShowInfo = false;
         ShowPeek = false;

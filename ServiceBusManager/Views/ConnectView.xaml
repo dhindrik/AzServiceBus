@@ -10,7 +10,7 @@
              Title="ConnectView">
     <Grid>
 
-        <Button Margin="0,20" HeightRequest="50" TextColor="White" HorizontalOptions="Start" VerticalOptions="Start" BackgroundColor="Transparent" Command="{Binding MenuCommand}"> 
+        <Button Margin="0,20" ToolTipProperties.Text="Open menu" HeightRequest="50" TextColor="White" HorizontalOptions="Start" VerticalOptions="Start" BackgroundColor="Transparent" Command="{Binding MenuCommand}"> 
             <Button.ImageSource>
                 <FontImageSource FontFamily="Icons"
                                  Glyph="&#xE86D;"

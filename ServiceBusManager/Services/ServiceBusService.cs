@@ -115,11 +115,20 @@ public sealed class ServiceBusService : IServiceBusService
         return Task.CompletedTask;
     }
 
-    public async Task<List<ServiceBusReceivedMessage>> Peek(string queueName)
+    public async Task<List<ServiceBusReceivedMessage>> Peek(string queueName, string? topicName = null)
     {
         if (client == null)
         {
             throw new Exception("You must run init first");
+        }
+
+        if(topicName != null)
+        {
+            var subscriptionReceiver = client.CreateReceiver(topicName, queueName);
+
+            var subscriptionMessages = await subscriptionReceiver.PeekMessagesAsync(100);
+
+            return subscriptionMessages.ToList();
         }
 
         var receiver = client.CreateReceiver(queueName);
@@ -129,11 +138,23 @@ public sealed class ServiceBusService : IServiceBusService
         return messages.ToList();
     }
 
-    public async Task<List<ServiceBusReceivedMessage>> PeekDeadLetter(string queueName)
+    public async Task<List<ServiceBusReceivedMessage>> PeekDeadLetter(string queueName, string? topicName = null)
     {
         if (client == null)
         {
             throw new Exception("You must run init first");
+        }
+
+        if (topicName != null)
+        {
+            var subscriptionReceiver = client.CreateReceiver(topicName, queueName, new ServiceBusReceiverOptions()
+            {
+                SubQueue = SubQueue.DeadLetter
+            });
+
+            var subscriptionMessages = await subscriptionReceiver.PeekMessagesAsync(100);
+
+            return subscriptionMessages.ToList();
         }
 
         var receiver = client.CreateReceiver(queueName, new ServiceBusReceiverOptions()

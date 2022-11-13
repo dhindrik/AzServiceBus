@@ -48,7 +48,14 @@
     <Grid>
         <Grid ColumnDefinitions="*,1, 2*" RowDefinitions="Auto, 1,*" IsVisible="{Binding IsNotBusy}">
             <HorizontalStackLayout Grid.ColumnSpan="3">
-                <Button Margin="0,20" HeightRequest="50" TextColor="White" HorizontalOptions="Start" VerticalOptions="Start" BackgroundColor="Transparent" Command="{Binding MenuCommand}">
+                <Button Margin="0,20"
+                        HeightRequest="50"
+                        TextColor="White"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Start"
+                        BackgroundColor="Transparent"
+                        Command="{Binding MenuCommand}"
+                        ToolTipProperties.Text="Open menu">
                     <Button.ImageSource>
                         <FontImageSource FontFamily="Icons"
                                  Glyph="&#xE86D;"
@@ -82,7 +89,7 @@
             <views:MessageView Grid.Row="2" Grid.Column="2" IsVisible="{Binding ShowPeek}" QueueName="{Binding CurrentQueue}" />
             <views:MessageView Grid.Row="2" Grid.Column="2" IsVisible="{Binding ShowDeadLetters}" DeadLetterQueueName="{Binding CurrentDeadLetterQueue}" />
             <views:InfoView Grid.Row="2" Grid.Column="2" IsVisible="{Binding ShowInfo}" QueueName="{Binding CurrentQueue}" />
-            <views:SubscriptionsView Grid.Row="2" Grid.Column="2" IsVisible="{Binding ShowSubscriptions}" TopicName="{Binding CurrentQueue}" />
+            <views:SubscriptionsView Grid.Row="2" Grid.Column="2" IsVisible="{Binding ShowSubscriptions}" TopicName="{Binding CurrentTopic}" />
         </Grid>
 
         <ActivityIndicator IsRunning="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" />

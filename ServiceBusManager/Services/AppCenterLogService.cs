@@ -2,7 +2,7 @@
 
 namespace ServiceBusManager.Services
 {
-	public class AppCenterLogService : ILogService
+	public sealed class AppCenterLogService : ILogService
 	{
 		public AppCenterLogService()
 		{

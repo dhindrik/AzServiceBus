@@ -60,7 +60,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="TinyMvvm.Maui" Version="4.0.1-pre12" />
-	  <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.11.0" />
+	  <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.11.1" />
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
 	  <PackageReference Include="Plugin.InAppBilling" Version="6.6.2-beta" />
 	</ItemGroup>

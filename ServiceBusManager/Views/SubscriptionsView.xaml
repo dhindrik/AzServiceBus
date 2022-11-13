@@ -2,6 +2,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ServiceBusManager.Views.SubscriptionsView"
+             xmlns:models="clr-namespace:ServiceBusManager.Models"
              BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
     <Grid x:Name="MainContent"
           BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}"
@@ -14,9 +15,46 @@
                     FontSize="Subtitle"/>
                 <Button HorizontalOptions="End" VerticalOptions="Center" Command="{Binding RefreshCommand}" Text="Refresh"/>
             </Grid>
-        </Grid>
 
-         <ActivityIndicator IsRunning="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" />
+
+            <Grid Grid.Row="2" ColumnDefinitions="970,100" RowSpacing="20" ColumnSpacing="20">
+
+                <Label Grid.Column="0" Text="Name" Style="{StaticResource HeaderLabel}" />
+
+             
+
+            </Grid>
+            <CollectionView x:Name="Subscriptions" Grid.Row="3" HorizontalOptions="Start" ItemsSource="{Binding Items}">
+
+                <CollectionView.EmptyView>
+
+                    <Label Margin="20,0" Text="No messages to show!" />
+
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Subscription">
+                        <ContentView Padding="0,5" HorizontalOptions="Start" WidthRequest="940">
+                            <Frame BorderColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}"
+                               BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}"
+                                HorizontalOptions="Start"
+                                Padding="10">
+                                <Grid ColumnDefinitions="860,70,120" RowSpacing="20" ColumnSpacing="20" Padding="0,0" HorizontalOptions="Fill">
+                                  
+                                    <Label Text="{Binding Name}" VerticalOptions="Center" />
+                                   
+
+                                    <Button Grid.Column="1" Text="Peek" Command="{Binding Source={x:Reference Subscriptions}, Path=BindingContext.PeekCommand}" CommandParameter="{Binding}" />
+                                    <Button Grid.Column="2" Text="Dead letters" Command="{Binding Source={x:Reference Subscriptions}, Path=BindingContext.DeadLettersCommand}" CommandParameter="{Binding}" />
+                                </Grid>
+                            </Frame>
+                        </ContentView>
+                    </DataTemplate>
+
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+        </Grid>
+        <ActivityIndicator IsRunning="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" />
     </Grid>
 </ContentView>
 

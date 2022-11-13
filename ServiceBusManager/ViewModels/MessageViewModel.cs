@@ -16,7 +16,16 @@ public sealed partial class MessageViewModel : ViewModel
     private string? queueName;
 
     [ObservableProperty]
+    private string? subscriptionName;
+
+    [ObservableProperty]
+    private string? displayName;
+
+    [ObservableProperty]
     private bool isDeadLetter;
+
+    [ObservableProperty]
+    private bool isSubscription;
 
     [ObservableProperty]
     private bool hasMessages;
@@ -27,16 +36,29 @@ public sealed partial class MessageViewModel : ViewModel
     [ObservableProperty]
     private ObservableCollection<ServiceBusReceivedMessage> messages = new ObservableCollection<ServiceBusReceivedMessage>();
 
-    public async Task LoadQueueMessages(string queueName, bool showDeadLetter = false)
+    public async Task LoadMessages(string queueName, bool showDeadLetter = false, bool isTopicSubscription = false)
     {
         try
         {
             IsDeadLetter = showDeadLetter;
+            IsSubscription = isTopicSubscription;
 
             IsBusy = true;
 
-            QueueName = queueName;
+            DisplayName = queueName;
 
+            if (queueName.Contains("/"))
+            {
+                var split = queueName.Split("/");
+
+                QueueName = split[1];
+                SubscriptionName = split[0];
+            }
+            else
+            {
+                SubscriptionName = null;
+                QueueName = queueName;
+            }
 
             await LoadAndUpdate();
 
@@ -63,11 +85,11 @@ public sealed partial class MessageViewModel : ViewModel
 
         if (IsDeadLetter)
         {
-            messages = await serviceBusService.PeekDeadLetter(QueueName);
+            messages = await serviceBusService.PeekDeadLetter(QueueName, SubscriptionName);
         }
         else
         {
-            messages = await serviceBusService.Peek(QueueName);
+            messages = await serviceBusService.Peek(QueueName, SubscriptionName);
         }
 
         await Update(messages);

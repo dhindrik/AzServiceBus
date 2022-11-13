@@ -13,7 +13,7 @@
             <Grid>
             <HorizontalStackLayout HorizontalOptions="Start" VerticalOptions="Center">
                 <Label 
-                    Text="{Binding QueueName}"
+                    Text="{Binding DisplayName}"
                     FontSize="Subtitle"/>
 
                 <Label 
@@ -37,7 +37,7 @@
                 </HorizontalStackLayout>
             </VerticalStackLayout>
 
-            <Grid Grid.Row="2" ColumnDefinitions="20,300,200,200,100,100" RowSpacing="20" ColumnSpacing="20">
+            <Grid Grid.Row="2" ColumnDefinitions="20,300,200,200,170,100" RowSpacing="20" ColumnSpacing="20">
 
                 <Label Grid.Column="1" Text="MessageId" Style="{StaticResource HeaderLabel}" />
 
@@ -63,7 +63,7 @@
                                BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}"
                                 HorizontalOptions="Start"
                                 Padding="10"> 
-                        <Grid ColumnDefinitions="20,300,200,200,100,100" RowSpacing="20" ColumnSpacing="20" Padding="0,0" HorizontalOptions="Start">
+                        <Grid ColumnDefinitions="20,300,200,200,170,100" RowSpacing="20" ColumnSpacing="20" Padding="0,0" HorizontalOptions="Start">
                             <controls:CustomCheckBox Color="{StaticResource Primary}" VerticalOptions="Center" ToggleCommand="{Binding Source={x:Reference Messages}, Path=BindingContext.ToggleMessageSelectedCommand}" />
                             <Label Grid.Column="1" Text="{Binding MessageId}" VerticalOptions="Center" />
                             <Label Grid.Column="2" Text="{Binding EnqueuedTime}" VerticalOptions="Center" />

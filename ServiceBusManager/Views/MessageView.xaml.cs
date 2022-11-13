@@ -11,7 +11,7 @@ public partial class MessageView
     {
         if (bindable is MessageView messageView  && messageView.MainContent.BindingContext is MessageViewModel viewModel && newValue is string queueName)
         {
-            MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadQueueMessages(queueName));
+            MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadMessages(queueName));
         }
     });
 
@@ -20,9 +20,28 @@ public partial class MessageView
        {
            if (bindable is MessageView messageView && messageView.Content.BindingContext is MessageViewModel viewModel && newValue is string queueName)
            {
-               MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadQueueMessages(queueName, true));
+               MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadMessages(queueName, true));
            }
        });
+
+
+    public static BindableProperty SubscriptionNameProperty = BindableProperty.Create(nameof(SubscriptionName), typeof(string), typeof(MessageView), null, defaultBindingMode: BindingMode.TwoWay,
+     propertyChanged: (bindable, oldValue, newValue) =>
+     {
+         if (bindable is MessageView messageView && messageView.Content.BindingContext is MessageViewModel viewModel && newValue is string queueName)
+         {
+             MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadMessages(queueName, false, true));
+         }
+     });
+
+    public static BindableProperty DeadLetterSubscriptionNameProperty = BindableProperty.Create(nameof(DeadLetterSubscriptionName), typeof(string), typeof(MessageView), null, defaultBindingMode: BindingMode.TwoWay,
+      propertyChanged: (bindable, oldValue, newValue) =>
+      {
+          if (bindable is MessageView messageView && messageView.Content.BindingContext is MessageViewModel viewModel && newValue is string queueName)
+          {
+              MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadMessages(queueName, true, true));
+          }
+      });
 
 
     public MessageView()
@@ -46,6 +65,20 @@ public partial class MessageView
     {
         get => GetValue(DeadLetterQueueNameProperty) as string;
         set => SetValue(DeadLetterQueueNameProperty, value);
+    }
+
+
+    public string? SubscriptionName
+    {
+        get => GetValue(SubscriptionNameProperty) as string;
+        set => SetValue(SubscriptionNameProperty, value);
+    }
+
+
+    public string? DeadLetterSubscriptionName
+    {
+        get => GetValue(DeadLetterSubscriptionNameProperty) as string;
+        set => SetValue(DeadLetterSubscriptionNameProperty, value);
     }
 
     protected override void OnPropertyChanged([CallerMemberName] string? propertyName = null)
