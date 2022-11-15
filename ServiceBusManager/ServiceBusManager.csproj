@@ -59,8 +59,8 @@
 		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.11.1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
 		<PackageReference Include="Plugin.InAppBilling" Version="6.7.0" />
-		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.0-preview.1" />
-		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.0-preview.1" />
+	<!--	<PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.0-preview.1" />
+		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.0-preview.1" />-->
 	</ItemGroup>
 	<ItemGroup>
 		<None Remove="Components\" />

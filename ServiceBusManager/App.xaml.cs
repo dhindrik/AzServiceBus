@@ -10,11 +10,11 @@ public partial class App
     {
         InitializeComponent();
 
-#if RELEASE
-        AppCenter.Start("macos=fd88a1ae-4045-4517-aff3-eebb89f45c8c", typeof(Analytics), typeof(Crashes));
-#else
-        AppCenter.Start("c7d58e55-833f-4eff-abea-b753df6a9ac5", typeof(Analytics), typeof(Crashes));
-#endif
+//#if RELEASE
+//        AppCenter.Start(SecretKeys.AppCenterProd, typeof(Analytics), typeof(Crashes));
+//#else
+//        AppCenter.Start(SecretKeys.AppCenterDev, typeof(Analytics), typeof(Crashes));
+//#endif
 
 
         MainPage = new AppShell(viewModel);       
