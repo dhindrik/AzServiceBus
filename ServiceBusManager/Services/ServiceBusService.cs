@@ -5,10 +5,14 @@ public sealed class ServiceBusService : IServiceBusService
     private ServiceBusClient? client;
     private ServiceBusAdministrationClient? adminClient;
     private readonly ILogService logService;
+    private readonly IConnectionService connectionService;
 
-    public ServiceBusService(ILogService logService)
+    private string? defaultConnectionString;
+
+    public ServiceBusService(ILogService logService, IConnectionService connectionService)
     {
         this.logService = logService;
+        this.connectionService = connectionService;
     }
 
     public async Task<QueueOrTopic> GetQueue(string name)
@@ -109,6 +113,11 @@ public sealed class ServiceBusService : IServiceBusService
 
     public Task Init(string connectionString)
     {
+        if (defaultConnectionString == null)
+        {
+            defaultConnectionString = connectionString;
+        }
+
         client = new ServiceBusClient(connectionString);
         adminClient = new ServiceBusAdministrationClient(connectionString);
 
@@ -122,7 +131,7 @@ public sealed class ServiceBusService : IServiceBusService
             throw new Exception("You must run init first");
         }
 
-        if(topicName != null)
+        if (topicName != null)
         {
             var subscriptionReceiver = client.CreateReceiver(topicName, queueName);
 
@@ -133,7 +142,7 @@ public sealed class ServiceBusService : IServiceBusService
 
         var receiver = client.CreateReceiver(queueName);
 
-        var messages = await receiver.PeekMessagesAsync(100);
+        var messages = await receiver.PeekMessagesAsync(10000);
 
         return messages.ToList();
     }
@@ -162,24 +171,36 @@ public sealed class ServiceBusService : IServiceBusService
             SubQueue = SubQueue.DeadLetter
         });
 
-        var messages = await receiver.PeekMessagesAsync(100);
+        var messages = await receiver.PeekMessagesAsync(10000);
 
         return messages.ToList();
     }
 
-    public async Task AddToDeadLetter(string queueName, ServiceBusReceivedMessage message)
+    public async Task AddToDeadLetter(string queueName, ServiceBusReceivedMessage message, string? topicName = null)
     {
         if (client == null)
         {
             throw new Exception("You must run init first");
         }
 
-        var receiver = client.CreateReceiver(queueName, new ServiceBusReceiverOptions()
-        {
-            ReceiveMode = ServiceBusReceiveMode.PeekLock
-        });
+        ServiceBusReceiver receiver;
 
-        var messages = await receiver.ReceiveMessagesAsync(100);
+        if (topicName != null)
+        {
+            receiver = client.CreateReceiver(topicName, queueName, new ServiceBusReceiverOptions()
+            {
+                ReceiveMode = ServiceBusReceiveMode.PeekLock
+            });
+        }
+        else
+        {
+            receiver = client.CreateReceiver(queueName, new ServiceBusReceiverOptions()
+            {
+                ReceiveMode = ServiceBusReceiveMode.PeekLock
+            });
+        }
+
+        var messages = await receiver.ReceiveMessagesAsync(10000);
 
         var messageToAdd = messages.Single(x => x.MessageId == message.MessageId && x.EnqueuedTime == message.EnqueuedTime);
 
@@ -198,7 +219,7 @@ public sealed class ServiceBusService : IServiceBusService
         await receiver.DisposeAsync();
     }
 
-    public async Task Resend(string queueName, ServiceBusReceivedMessage message, string? editedBody = null)
+    public async Task Resend(string queueName, ServiceBusReceivedMessage message, string? editedBody = null, string? topicName = null)
     {
         try
         {
@@ -207,19 +228,35 @@ public sealed class ServiceBusService : IServiceBusService
                 throw new Exception("You must run init first");
             }
 
-            var receiver = client.CreateReceiver(queueName, new ServiceBusReceiverOptions()
+            ServiceBusReceiver receiver;
+            ServiceBusSender sender;
+
+            if (topicName != null)
             {
-                SubQueue = SubQueue.DeadLetter,
-                ReceiveMode = ServiceBusReceiveMode.PeekLock
-            });
+                receiver = client.CreateReceiver(topicName, queueName, new ServiceBusReceiverOptions()
+                {
+                    SubQueue = SubQueue.DeadLetter,
+                    ReceiveMode = ServiceBusReceiveMode.PeekLock
+                });
 
-            var messages = await receiver.ReceiveMessagesAsync(100);
+                sender = client.CreateSender(topicName);
+            }
+            else
+            {
+                receiver = client.CreateReceiver(queueName, new ServiceBusReceiverOptions()
+                {
+                    SubQueue = SubQueue.DeadLetter,
+                    ReceiveMode = ServiceBusReceiveMode.PeekLock
+                });
 
-            var sender = client.CreateSender(queueName);
+                sender = client.CreateSender(queueName);
+            }
+
+            var messages = await receiver.ReceiveMessagesAsync(10000);
 
             BinaryData body;
 
-            if(editedBody == null)
+            if (editedBody == null)
             {
                 body = message.Body;
             }
@@ -256,7 +293,7 @@ public sealed class ServiceBusService : IServiceBusService
         return Task.FromResult(client.FullyQualifiedNamespace);
     }
 
-    public async Task Remove(string queueName, bool isDeadLetter, ServiceBusReceivedMessage message)
+    public async Task Remove(string queueName, bool isDeadLetter, ServiceBusReceivedMessage message, string? topicName = null)
     {
 
         if (client == null)
@@ -275,11 +312,24 @@ public sealed class ServiceBusService : IServiceBusService
             options.SubQueue = SubQueue.DeadLetter;
         }
 
-        var receiver = client.CreateReceiver(queueName, options);
+        ServiceBusReceiver receiver;
+        ServiceBusSender sender;
 
-        var messages = await receiver.ReceiveMessagesAsync(100);
+        if (topicName != null)
+        {
+            receiver = client.CreateReceiver(topicName, queueName, options);
 
-        var sender = client.CreateSender(queueName);
+            sender = client.CreateSender(topicName);
+        }
+        else
+        {
+            receiver = client.CreateReceiver(queueName, options);
+
+            sender = client.CreateSender(queueName);
+        }
+
+        var messages = await receiver.ReceiveMessagesAsync(10000);
+
 
         var oldMessage = messages.Single(x => x.MessageId == message.MessageId && x.EnqueuedTime == message.EnqueuedTime);
 
@@ -299,7 +349,7 @@ public sealed class ServiceBusService : IServiceBusService
         var subscriptionNames = new List<Subscription>();
 
         while (await enumerator.MoveNextAsync())
-        {          
+        {
 
             if (enumerator.Current == null || subscriptionNames.Any(x => x.Name == enumerator.Current.SubscriptionName))
             {
@@ -314,5 +364,152 @@ public sealed class ServiceBusService : IServiceBusService
         }
 
         return subscriptionNames;
+    }
+
+    public async Task<int> CheckNewDeadLetters(DateTimeOffset dateTime)
+    {
+        var connections = await connectionService.Get();
+
+        int count = 0;
+
+        foreach (var connection in connections)
+        {
+            if (connection.Value == null)
+            {
+                continue;
+            }
+
+            try
+            {
+                await Init(connection.Value);
+
+                var queues = await GetQueues();
+
+                foreach (var queue in queues)
+                {
+                    if (queue == null || queue.Name == null)
+                    {
+                        continue;
+                    }
+
+                    var deadLetters = await PeekDeadLetter(queue.Name);
+                    count += deadLetters.Where(x => x.EnqueuedTime > dateTime).Count();
+                }
+
+                var topics = await GetTopics();
+
+                foreach (var topic in topics)
+                {
+                    if (topic == null || topic.Name == null)
+                    {
+                        continue;
+                    }
+
+                    var subscriptions = await GetSubscriptions(topic.Name);
+
+                    foreach (var queue in subscriptions)
+                    {
+                        if (queue == null || queue.Name == null)
+                        {
+                            continue;
+                        }
+
+                        var deadLetters = await PeekDeadLetter(queue.Name, topic.Name);
+                        count += deadLetters.Where(x => x.EnqueuedTime > dateTime).Count();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = Task.Run(async () => await logService.LogException(ex));
+            }
+        }
+
+        if (defaultConnectionString != null)
+        {
+            await Init(defaultConnectionString);
+        }
+
+        return count;
+    }
+
+    public async Task<Dictionary<string, List<(string Name, int Count)>>> GetDeadLetters()
+    {
+        var connections = await connectionService.Get();
+
+        Dictionary<string, List<(string Name, int Count)>> deadLetterCounts = new();
+
+        foreach (var connection in connections)
+        {
+
+            if (connection.Value == null || connection.Name == null)
+            {
+                continue;
+            }
+
+            try
+            {
+                await Init(connection.Value);
+
+                var queues = await GetQueues();
+
+                foreach (var queue in queues)
+                {
+                    if (queue == null || queue.Name == null)
+                    {
+                        continue;
+                    }
+
+                    var deadLetters = await PeekDeadLetter(queue.Name);
+
+                    if (deadLetters.Count > 0)
+                    {
+                        if (!deadLetterCounts.ContainsKey(connection.Name))
+                        {
+                            deadLetterCounts.Add(connection.Name, new List<(string Name, int Count)>());
+                        }
+
+                        deadLetterCounts[connection.Name].Add((queue.Name, deadLetters.Count));
+                    }
+                }
+
+                var topics = await GetTopics();
+
+                foreach (var topic in topics)
+                {
+                    if (topic == null || topic.Name == null)
+                    {
+                        continue;
+                    }
+
+                    var subscriptions = await GetSubscriptions(topic.Name);
+
+                    foreach (var queue in subscriptions)
+                    {
+                        if (queue == null || queue.Name == null)
+                        {
+                            continue;
+                        }
+
+                        var deadLetters = await PeekDeadLetter(queue.Name, topic.Name);
+
+                        if (deadLetters.Count > 0)
+                        {
+                            if (!deadLetterCounts.ContainsKey(connection.Name))
+                            {
+                                deadLetterCounts.Add(connection.Name, new List<(string Name, int Count)>());
+                            }
+
+                            deadLetterCounts[connection.Name].Add(($"{topic.Name}/{queue.Name}", deadLetters.Count));
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = Task.Run(async () => await logService.LogException(ex));
+            }
+        }
+        return deadLetterCounts;
     }
 }

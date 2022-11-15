@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 	<PropertyGroup>
 		<TargetFrameworks>net7.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net6.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-	<!--	<TargetFrameworks>$(TargetFrameworks);net6.0-tizen</TargetFrameworks> -->
+		<!--	<TargetFrameworks>$(TargetFrameworks);net6.0-tizen</TargetFrameworks> -->
 		<OutputType>Exe</OutputType>
 		<RootNamespace>ServiceBusManager</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -12,18 +12,14 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<EnableDefaultCssItems>false</EnableDefaultCssItems>
-
 		<!-- Display name -->
-		<ApplicationTitle>ServiceBusManager</ApplicationTitle>
-
+		<ApplicationTitle>AzServiceBus</ApplicationTitle>
 		<!-- App Identifier -->
-		<ApplicationId>se.hindrikes.servicebus</ApplicationId>
+		<ApplicationId>hindrikes.se.azservicebus</ApplicationId>
 		<ApplicationIdGuid>43681C5C-733E-4899-B69F-32C627F37BA2</ApplicationIdGuid>
-
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
-
+		<ApplicationVersion>2</ApplicationVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
@@ -31,48 +27,57 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
-
-
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-	  <EnableCodeSigning>false</EnableCodeSigning>
+		<EnableCodeSigning>false</EnableCodeSigning>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-	  <EnableCodeSigning>false</EnableCodeSigning>
+		<EnableCodeSigning>false</EnableCodeSigning>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
-	  <CreatePackage>false</CreatePackage>
+	
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">
+		<CreatePackage>true</CreatePackage>
+		<CodesignKey>Apple Distribution: Daniel Hindrikes (Q5EHXWCN5X)</CodesignKey>
+		<PackageSigningKey>3rd Party Mac Developer Installer: Daniel Hindrikes (Q5EHXWCN5X)</PackageSigningKey>
+		<EnableCodeSigning>True</EnableCodeSigning>
+		<CodesignProvision>AzServiceBusDist</CodesignProvision>
+		<CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>
+		<EnablePackageSigning>true</EnablePackageSigning>
 	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#118AB2" BaseSize="1000,1000" />
-
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
-
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" TintColor="White" />
 		<MauiFont Include="Resources\Fonts\*" />
-
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
-
-
 	<ItemGroup>
-	  <PackageReference Include="TinyMvvm.Maui" Version="4.0.1-pre12" />
-	  <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.11.1" />
-	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
-	  <PackageReference Include="Plugin.InAppBilling" Version="6.6.2-beta" />
+		<PackageReference Include="TinyMvvm.Maui" Version="4.0.1-pre12" />
+		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.11.1" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+		<PackageReference Include="Plugin.InAppBilling" Version="6.7.0" />
+		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.0-preview.1" />
+		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.0-preview.1" />
 	</ItemGroup>
 	<ItemGroup>
-	  <None Remove="Components\" />
+		<None Remove="Components\" />
+		<None Remove="Microsoft.AppCenter.Crashes" />
+		<None Remove="Microsoft.AppCenter.Analytics" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Components\" />
+		<Folder Include="Components\" />
 	</ItemGroup>
 	<ItemGroup>
-	  <MauiXaml Update="Views\SubscriptionsView.xaml">
-	    <SubType></SubType>
-	  </MauiXaml>
+		<MauiXaml Update="Views\SubscriptionsView.xaml">
+			<SubType>
+			</SubType>
+		</MauiXaml>
+		<MauiXaml Update="Views\DeadLettersView.xaml">
+			<SubType>
+			</SubType>
+		</MauiXaml>
 	</ItemGroup>
 </Project>

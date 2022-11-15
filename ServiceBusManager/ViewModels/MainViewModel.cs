@@ -5,10 +5,12 @@ namespace ServiceBusManager.ViewModels;
 public sealed partial class MainViewModel : ViewModel
 {
     private readonly IServiceBusService serviceBusService;
+    private readonly IConnectionService connectionService;
 
-    public MainViewModel(IServiceBusService serviceBusService)
+    public MainViewModel(IServiceBusService serviceBusService, IConnectionService connectionService)
     {
         this.serviceBusService = serviceBusService;
+        this.connectionService = connectionService;
     }
 
     public override async Task OnParameterSet()
@@ -19,7 +21,17 @@ public sealed partial class MainViewModel : ViewModel
         {
             IsBusy = true;
 
-            connectionString = NavigationParameter as string;
+            if (NavigationParameter is string)
+            {
+                connectionString = NavigationParameter as string;
+            }
+            else if(NavigationParameter is DeadLetterInfo info)
+            {
+                var connections = await connectionService.Get();
+
+                connectionString = connections.First(x => x.Name == info.Connection).Value;
+                OpenDeadLetters(info.Fullname);
+            }
 
             if (connectionString == null)
             {

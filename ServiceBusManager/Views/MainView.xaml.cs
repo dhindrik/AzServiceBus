@@ -2,7 +2,9 @@
 
 public partial class MainView
 {
-    public MainView(MainViewModel viewModel)
+    private readonly ILogService logService;
+
+    public MainView(MainViewModel viewModel, ILogService logService)
 	{
 		InitializeComponent();
 
@@ -10,18 +12,25 @@ public partial class MainView
 
         viewModel.AddAction($"open_{nameof(MessageDetailsView)}", ShowPopup);
         viewModel.AddAction($"close_{nameof(MessageDetailsView)}", ClosePopup);
+        this.logService = logService;
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
 
+        Task.Run(async () => await logService.LogPageView(nameof(MainView)));
+    }
 
     private void ShowPopup(object message)
     {
 
-        var parameter = ((ServiceBusReceivedMessage Message, bool IsDeadLetter))message;
+        var parameter = ((ServiceBusReceivedMessage Message, bool IsDeadLetter, string? TopicName))message;
 
         if (MessageDetails.BindingContext is MessageDetailsViewModel detailsViewModel)
         {
-            MainThread.BeginInvokeOnMainThread(() => detailsViewModel.LoadMessage(parameter.Message, parameter.IsDeadLetter));
+            MainThread.BeginInvokeOnMainThread(() => detailsViewModel.LoadMessage(parameter.Message, parameter.IsDeadLetter, parameter.TopicName));
+            Task.Run(async () => await logService.LogPageView(nameof(MessageDetailsView)));
         }
 
         Popup.ScaleTo(1, 250, Easing.SinOut);

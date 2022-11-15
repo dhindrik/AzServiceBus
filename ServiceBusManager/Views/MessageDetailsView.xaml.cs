@@ -1,4 +1,6 @@
-﻿namespace ServiceBusManager.Views;
+﻿using ServiceBusManager.Services;
+
+namespace ServiceBusManager.Views;
 
 public partial class MessageDetailsView : ContentView
 {

@@ -21,7 +21,7 @@
 
                     <Grid>
                         <Label Text="App version" FontAttributes="Bold" />
-                        <Label HorizontalOptions="End" Text="1.0" />
+                        <Label HorizontalOptions="End" Text="{Binding AppVersion}" />
                     </Grid>
 
                     <Label Text="This app is built using .NET MAUI." />

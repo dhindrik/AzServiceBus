@@ -6,6 +6,7 @@ namespace ServiceBusManager.ViewModels;
 public partial class ViewModel : TinyViewModel
 {
     private readonly ILogService logService;
+    private readonly IFeatureService featureService;
 
     private static Dictionary<string, Action> Actions { get; } = new Dictionary<string, Action>();
     private static Dictionary<string, Action<object>> ParameterActions { get; } = new Dictionary<string, Action<object>>();
@@ -16,27 +17,47 @@ public partial class ViewModel : TinyViewModel
     public ViewModel()
     {
         var log = Resolver.Resolve<ILogService>();
+        var service = Resolver.Resolve<IFeatureService>();
 
         if (log == null)
         {
             throw new NullReferenceException("ILogService need to be added to IoC container");
         }
 
-        _ = Task.Run(() =>
+        if (service == null)
         {
-            var service = Resolver.Resolve<IFeatureService>();
-            hasPremium = service?.HasFeature(Constants.Features.Premium);
-
-            MainThread.BeginInvokeOnMainThread(() => OnPropertyChanged(nameof(hasPremium)));
-        });
+            throw new NullReferenceException("IFeatureService need to be added to IoC container");
+        }
 
         logService = log;
+        featureService = service;
+
+        service.FeatureChanged += (sender, args) => CheckPremium();
+
+        if (!hasPremium.HasValue)
+        {
+            CheckPremium();
+        }
+    }
+
+    private void CheckPremium()
+    {
+        _ = Task.Run(() =>
+        {
+            hasPremium = featureService.HasFeature(Constants.Features.Premium);
+
+            MainThread.BeginInvokeOnMainThread(() => {
+                OnPropertyChanged(nameof(HasPremium));
+                OnPropertyChanged(nameof(HasNotPremium));
+            });
+        });
     }
 
     [ObservableProperty]
     private ObservableCollection<ConnectionInfo> connections = new();
 
     public bool HasPremium => hasPremium.HasValue ? hasPremium.Value : false;
+    public bool HasNotPremium => !HasPremium;
 
     protected void HandleException(Exception ex)
     {

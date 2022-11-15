@@ -13,7 +13,6 @@
 /src/TinyMvvm.Forms/bin/Debug/netstandard1.0
 /src/TinyMvvm.Autofac/bin/Debug/netstandard1.1
 
-
 # Created by https://www.gitignore.io/api/visualstudio,xamarinstudio
 
 ### XamarinStudio ###
@@ -322,3 +321,4 @@ __pycache__/
 # End of https://www.gitignore.io/api/visualstudio,xamarinstudio
 
 tools/
+ServiceBusManager/SecretKeys.cs

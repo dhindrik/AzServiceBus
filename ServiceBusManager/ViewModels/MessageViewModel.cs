@@ -16,7 +16,7 @@ public sealed partial class MessageViewModel : ViewModel
     private string? queueName;
 
     [ObservableProperty]
-    private string? subscriptionName;
+    private string? topicName;
 
     [ObservableProperty]
     private string? displayName;
@@ -52,11 +52,11 @@ public sealed partial class MessageViewModel : ViewModel
                 var split = queueName.Split("/");
 
                 QueueName = split[1];
-                SubscriptionName = split[0];
+                TopicName = split[0];
             }
             else
             {
-                SubscriptionName = null;
+                TopicName = null;
                 QueueName = queueName;
             }
 
@@ -85,11 +85,11 @@ public sealed partial class MessageViewModel : ViewModel
 
         if (IsDeadLetter)
         {
-            messages = await serviceBusService.PeekDeadLetter(QueueName, SubscriptionName);
+            messages = await serviceBusService.PeekDeadLetter(QueueName, TopicName);
         }
         else
         {
-            messages = await serviceBusService.Peek(QueueName, SubscriptionName);
+            messages = await serviceBusService.Peek(QueueName, TopicName);
         }
 
         await Update(messages);
@@ -115,7 +115,7 @@ public sealed partial class MessageViewModel : ViewModel
             return;
         }
 
-        (ServiceBusReceivedMessage Message, bool IsDeadLetter) parameter = (message, IsDeadLetter);
+        (ServiceBusReceivedMessage Message, bool IsDeadLetter, string? TopicName) parameter = (message, IsDeadLetter, TopicName);
 
         AddAction($"update_messages", () =>
         {
@@ -168,7 +168,7 @@ public sealed partial class MessageViewModel : ViewModel
 
                 foreach (var message in selectedMessages)
                 {
-                    await serviceBusService.Resend(currentQueueOrTopic, message);
+                    await serviceBusService.Resend(currentQueueOrTopic, message, TopicName);
                 }
 
                 selectedMessages.Clear();
@@ -203,7 +203,7 @@ public sealed partial class MessageViewModel : ViewModel
             {
                 foreach (var message in selectedMessages)
                 {
-                    await serviceBusService.Remove(currentQueueOrTopic, IsDeadLetter, message);
+                    await serviceBusService.Remove(currentQueueOrTopic, IsDeadLetter, message, TopicName);
                 }
 
                 selectedMessages.Clear();

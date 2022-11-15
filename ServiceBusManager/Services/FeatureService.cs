@@ -9,6 +9,8 @@ namespace ServiceBusManager.Services
         {
         }
 
+        public event EventHandler FeatureChanged;
+
         public void AddFeature(string featureName)
         {
             if(features == null)
@@ -23,6 +25,8 @@ namespace ServiceBusManager.Services
             }
 
             features.Add(featureName, DateTime.MaxValue);
+
+            SaveFeatures();
         }
 
         public void AddFeature(string featureName, DateTime validTo)
@@ -39,6 +43,8 @@ namespace ServiceBusManager.Services
             }
 
             features.Add(featureName, validTo);
+
+            SaveFeatures();
         }
 
         public bool HasFeature(string featureName)
@@ -84,6 +90,8 @@ namespace ServiceBusManager.Services
             var json = JsonSerializer.Serialize(features);
 
             File.WriteAllText(path, json);
+
+            FeatureChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

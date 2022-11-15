@@ -53,7 +53,7 @@
 
                 <CollectionView.EmptyView>
 
-                    <Label Margin="20,0" Text="No messages to show!" />
+                    <Label Margin="20,0" Text="No messages to show!" FontSize="Medium" />
 
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>

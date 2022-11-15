@@ -41,6 +41,19 @@
     </ShellContent>
 
      <ShellContent
+        Title="Dead letters"
+        ContentTemplate="{DataTemplate views:DeadLettersView}"
+        Route="DeadLetters">
+        <ShellContent.FlyoutIcon>
+            <FontImageSource FontFamily="Icons"
+                                 Glyph="&#xF881;"
+                                 Size="22"
+                                 Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+
+        </ShellContent.FlyoutIcon>
+    </ShellContent>
+
+     <ShellContent
         Title="Premium"
         ContentTemplate="{DataTemplate views:PremiumView}"
         Route="Premium">

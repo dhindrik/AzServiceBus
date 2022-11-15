@@ -85,7 +85,7 @@
                     </DataTemplate>
                 </CollectionView.GroupHeaderTemplate>
             </CollectionView>
-            <Label Grid.Row="2" Grid.Column="2" Text="Select a queue or topic to show more info" HorizontalOptions="Center" VerticalOptions="Center" />
+            <Label Grid.Row="2" Grid.Column="2" FontSize="Medium" Text="Select a queue or topic to show more info" HorizontalOptions="Center" VerticalOptions="Center" />
             <views:MessageView Grid.Row="2" Grid.Column="2" IsVisible="{Binding ShowPeek}" QueueName="{Binding CurrentQueue}" />
             <views:MessageView Grid.Row="2" Grid.Column="2" IsVisible="{Binding ShowDeadLetters}" DeadLetterQueueName="{Binding CurrentDeadLetterQueue}" />
             <views:InfoView Grid.Row="2" Grid.Column="2" IsVisible="{Binding ShowInfo}" QueueName="{Binding CurrentQueue}" />

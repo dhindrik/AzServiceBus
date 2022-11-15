@@ -1,6 +1,7 @@
 ﻿global using System.Text.Json;
 global using System.Windows.Input;
 global using System.Collections.ObjectModel;
+global using System.Linq;
 
 global using Microsoft.AspNetCore.Components.WebView.Maui;
 
@@ -73,11 +74,13 @@ public static class MauiProgram
         builder.Services.AddSingleton<PremiumViewModel>();
         builder.Services.AddSingleton<AboutViewModel>();
         builder.Services.AddSingleton<SubscriptionsViewModel>();
+        builder.Services.AddSingleton<DeadLettersViewModel>();
 
         builder.Services.AddSingleton<ConnectView>();
         builder.Services.AddSingleton<MainView>();
         builder.Services.AddSingleton<PremiumView>();
         builder.Services.AddSingleton<AboutView>();
+        builder.Services.AddSingleton<DeadLettersView>();
     }
 
 	private static void RegisterRoutes()

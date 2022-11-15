@@ -1,10 +1,12 @@
 ﻿using System.Runtime.CompilerServices;
+using ServiceBusManager.Services;
 
 namespace ServiceBusManager.Views;
 
 public partial class MessageView
 {
     private readonly MessageViewModel? viewModel;
+    private readonly ILogService logService;
 
     public static BindableProperty QueueNameProperty = BindableProperty.Create(nameof(QueueName), typeof(string), typeof(MessageView), null, defaultBindingMode: BindingMode.TwoWay,
         propertyChanged: (bindable, oldValue, newValue) =>
@@ -12,6 +14,7 @@ public partial class MessageView
         if (bindable is MessageView messageView  && messageView.MainContent.BindingContext is MessageViewModel viewModel && newValue is string queueName)
         {
             MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadMessages(queueName));
+            Task.Run(async () => await messageView.logService.LogPageView(nameof(MessageView)));
         }
     });
 
@@ -21,6 +24,7 @@ public partial class MessageView
            if (bindable is MessageView messageView && messageView.Content.BindingContext is MessageViewModel viewModel && newValue is string queueName)
            {
                MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadMessages(queueName, true));
+               Task.Run(async () => await messageView.logService.LogPageView(nameof(MessageView)));
            }
        });
 
@@ -31,6 +35,7 @@ public partial class MessageView
          if (bindable is MessageView messageView && messageView.Content.BindingContext is MessageViewModel viewModel && newValue is string queueName)
          {
              MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadMessages(queueName, false, true));
+             Task.Run(async () => await messageView.logService.LogPageView(nameof(MessageView)));
          }
      });
 
@@ -40,6 +45,7 @@ public partial class MessageView
           if (bindable is MessageView messageView && messageView.Content.BindingContext is MessageViewModel viewModel && newValue is string queueName)
           {
               MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadMessages(queueName, true, true));
+              Task.Run(async () => await messageView.logService.LogPageView(nameof(MessageView)));
           }
       });
 
@@ -51,6 +57,15 @@ public partial class MessageView
         viewModel = Resolver.Resolve<MessageViewModel>();
 
         MainContent.BindingContext = viewModel;
+
+        var log = Resolver.Resolve<ILogService>();
+
+        if (log == null)
+        {
+            throw new Exception("ILogService need to be added to IoC");
+        }
+
+        logService = log;
     }
 
 

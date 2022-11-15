@@ -1,10 +1,10 @@
-﻿using CommunityToolkit.Mvvm.Input;
-
-namespace ServiceBusManager.ViewModels;
+﻿namespace ServiceBusManager.ViewModels;
 
 public sealed partial class MessageDetailsViewModel : ViewModel
 {
     private readonly IServiceBusService serviceBusService;
+
+    private string? topicName;
 
     public MessageDetailsViewModel(IServiceBusService serviceBusService)
     {
@@ -36,10 +36,13 @@ public sealed partial class MessageDetailsViewModel : ViewModel
     [ObservableProperty]
     private string? body;
 
-    public void LoadMessage(ServiceBusReceivedMessage message, bool isDeadLetterQueue)
+
+    public void LoadMessage(ServiceBusReceivedMessage message, bool isDeadLetterQueue, string? topicName)
     {
         Item = message;
         IsDeadLetter = isDeadLetterQueue;
+
+        this.topicName = topicName;
 
         IsEditMode = false;
         IsRaw = false;
@@ -85,7 +88,7 @@ public sealed partial class MessageDetailsViewModel : ViewModel
         }
         else
         {
-            Task.Run(async () => await serviceBusService.Resend(currentQueueOrTopic, Item));
+            Task.Run(async () => await serviceBusService.Resend(currentQueueOrTopic, Item, topicName));
         }
         
 
@@ -100,7 +103,7 @@ public sealed partial class MessageDetailsViewModel : ViewModel
             return;
         }
 
-        Task.Run(async () => await serviceBusService.Remove(currentQueueOrTopic, IsDeadLetter, Item));
+        Task.Run(async () => await serviceBusService.Remove(currentQueueOrTopic, IsDeadLetter, Item, topicName));
 
         Close();
     }

@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mvvm:TinyView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ServiceBusManager.ViewModels"
+             xmlns:models="clr-namespace:ServiceBusManager.Models"
+             xmlns:mvvm="clr-namespace:TinyMvvm;assembly=TinyMvvm.Maui"
+             x:Class="ServiceBusManager.Views.DeadLettersView"
+             Title="Dead letters" x:DataType="vm:DeadLettersViewModel"
+               BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+    <ContentPage.Resources>
+
+
+    </ContentPage.Resources>
+    <Grid RowDefinitions="Auto,*">
+
+        <Button Margin="0,20" HeightRequest="50" TextColor="White" HorizontalOptions="Start" VerticalOptions="Start" BackgroundColor="Transparent"
+                Command="{Binding MenuCommand}" ToolTipProperties.Text="Open menu">
+            <Button.ImageSource>
+                <FontImageSource FontFamily="Icons"
+                                 Glyph="&#xE86D;"
+                                 Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+            </Button.ImageSource>
+        </Button>
+
+        <Frame WidthRequest="500" HeightRequest="220" VerticalOptions="Center" HorizontalOptions="Center" IsVisible="{Binding HasNotPremium}"
+               BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}">
+            <VerticalStackLayout Spacing="20">
+                <Label Text="Premium required" FontSize="Title" />
+                <Label FontSize="Medium" Text="For this page, Premium, is required. With Premium you can see an overview of dead letters and also get notifications when there are a new dead letter." />
+                <Button Text="Read more about Premium" Command="{Binding ShowPremiumCommand, Mode=OneTime}" />
+
+            </VerticalStackLayout>
+        </Frame>
+        <Grid RowDefinitions="30,*" Grid.Row="1" RowSpacing="20" Margin="20,0" IsVisible="{Binding HasPremium}">
+            <ActivityIndicator Grid.RowSpan="2" IsRunning="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" />
+             <Button HorizontalOptions="Start" VerticalOptions="Start" Command="{Binding RefreshCommand}" Text="Refresh"/>
+            <Grid Grid.Row="1"  IsVisible="{Binding IsNotBusy}" WidthRequest="700" HorizontalOptions="Start">
+                <CollectionView x:Name="DeadLetters" ItemsSource="{Binding Items}" IsGrouped="True">
+                    <CollectionView.EmptyView>
+                        <Label Margin="20,0" FontSize="Medium" Text="You are lucky, there are not dead letters!" />
+                    </CollectionView.EmptyView>
+                    <CollectionView.GroupHeaderTemplate>
+                        <DataTemplate x:DataType="{x:Null}">
+                            <ContentView Padding="0,20">
+                                <Label Text="{Binding Name}" FontSize="Subtitle" />
+                            </ContentView>
+                        </DataTemplate>
+                    </CollectionView.GroupHeaderTemplate>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:DeadLetterInfo">
+                            <ContentView Padding="0,5">
+                                <Frame Padding="10"
+                                BorderColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}"
+                               BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}">
+                                    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="20" Margin="0,10">
+                                        <Label Text="{Binding Fullname}" FontSize="Medium" VerticalOptions="Center" />
+                                        <Label Grid.Column="1" FontSize="Medium" VerticalOptions="Center" HorizontalOptions="End">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="{Binding Count}" />
+                                                    <Span Text=" dead letter(s)" />
+                                                </FormattedString>
+
+                                            </Label.FormattedText>
+                                            </Label>
+                                        <Button Grid.Column="2" Text="Show" HeightRequest="30" VerticalOptions="Center" HorizontalOptions="End" Command="{Binding Source={x:Reference DeadLetters}, Path=BindingContext.ShowCommand}" CommandParameter="{Binding}" />
+                                        
+                                    </Grid>
+                                </Frame>
+                            </ContentView>
+
+                        </DataTemplate>
+
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </Grid>
+        </Grid>
+    </Grid>
+</mvvm:TinyView>

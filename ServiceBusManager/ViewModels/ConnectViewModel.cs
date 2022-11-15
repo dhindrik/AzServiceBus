@@ -5,10 +5,12 @@ namespace ServiceBusManager.ViewModels;
 public sealed partial class ConnectViewModel : ViewModel
 {
     private readonly IConnectionService connectionService;
+    private readonly IFeatureService featureService;
 
-    public ConnectViewModel(IConnectionService connectionService)
+    public ConnectViewModel(IConnectionService connectionService, IFeatureService featureService)
     {
         this.connectionService = connectionService;
+        this.featureService = featureService;
     }
 
     public override async Task OnAppearing()
@@ -46,7 +48,7 @@ public sealed partial class ConnectViewModel : ViewModel
     {
         await base.OnParameterSet();
 
-        if(NavigationParameter is string command && command == "new")
+        if (NavigationParameter is string command && command == "new")
         {
             ShowNew = true;
             ShowConnections = false;
@@ -81,15 +83,26 @@ public sealed partial class ConnectViewModel : ViewModel
     [RelayCommand]
     private async Task SaveAndConnectToNew()
     {
-            try
+        try
+        {
+            if (connectionString == SecretKeys.PremiumKey)
             {
-                await connectionService.Save(new ConnectionInfo() { Name = name, Value = connectionString });
+                featureService.AddFeature(Constants.Features.Premium);
+                return;
             }
-            catch(Exception ex)
+
+            if(string.IsNullOrWhiteSpace(name))
             {
-                await HandleException(ex, "Could not save connection");
+                name = $"Connection-{DateTime.Now.ToString()}";
             }
-            await OpenConnection();
+
+            await connectionService.Save(new ConnectionInfo() { Name = name, Value = connectionString });
+        }
+        catch (Exception ex)
+        {
+            await HandleException(ex, "Could not save connection");
+        }
+        await OpenConnection();
     }
 
     [RelayCommand]

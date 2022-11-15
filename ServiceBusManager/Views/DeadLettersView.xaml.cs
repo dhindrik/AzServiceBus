@@ -1,13 +1,12 @@
 ﻿using ServiceBusManager.Services;
-using ServiceBusManager.ViewModels;
 
 namespace ServiceBusManager.Views;
 
-public partial class ConnectView
+public partial class DeadLettersView
 {
     private readonly ILogService logService;
 
-    public ConnectView(ConnectViewModel viewModel, ILogService logService)
+    public DeadLettersView(DeadLettersViewModel viewModel, ILogService logService)
 	{
 		InitializeComponent();
 
@@ -19,6 +18,6 @@ public partial class ConnectView
     {
         base.OnAppearing();
 
-        Task.Run(async () => await logService.LogPageView(nameof(ConnectView)));
+        Task.Run(async () => await logService.LogPageView(nameof(DeadLettersView)));
     }
 }
