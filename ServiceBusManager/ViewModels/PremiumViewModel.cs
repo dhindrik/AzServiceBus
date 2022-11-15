@@ -46,13 +46,13 @@ public sealed partial class PremiumViewModel : ViewModel
     }
 
     [ObservableProperty]
-    private string lifePrice;
+    private string? lifePrice;
 
     [ObservableProperty]
-    private string yearPrice;
+    private string? yearPrice;
 
     [ObservableProperty]
-    private string monthPrice;
+    private string? monthPrice;
     private readonly IFeatureService featureService;
 
     [RelayCommand]

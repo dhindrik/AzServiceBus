@@ -6,6 +6,7 @@
     xmlns:views="clr-namespace:ServiceBusManager.Views"
     Shell.NavBarIsVisible="False"
     FlyoutBehavior="Flyout"
+    FlyoutWidth="200"
     Shell.ItemTemplate="{StaticResource MenuItemTemplate}"
     Shell.MenuItemTemplate="{StaticResource MenuItemTemplate}"
     FlyoutBackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}">

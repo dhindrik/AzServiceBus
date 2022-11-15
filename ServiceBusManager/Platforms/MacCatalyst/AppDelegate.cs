@@ -13,17 +13,17 @@ public class AppDelegate : MauiUIApplicationDelegate
         base.FinishedLaunching(application, launchOptions);
 
 
-        UIApplication.SharedApplication.SetMinimumBackgroundFetchInterval(1800);
+        CheckFeature();
 
         if (launchOptions != null)
         {
-           
+
             if (launchOptions.ContainsKey(UIApplication.LaunchOptionsLocalNotificationKey))
             {
                 var localNotification = launchOptions[UIApplication.LaunchOptionsLocalNotificationKey] as UILocalNotification;
 
                 if (localNotification != null)
-                {              
+                {
                     UIApplication.SharedApplication.ApplicationIconBadgeNumber = 0;
 
                     Shell.Current.GoToAsync("//DeadLetters");
@@ -34,6 +34,37 @@ public class AppDelegate : MauiUIApplicationDelegate
         return true;
     }
 
+    private void CheckFeature()
+    {
+        var service = Resolver.Resolve<IFeatureService>();
+
+        if(service == null)
+        {
+            throw new ArgumentNullException("Add IFeatureService to IoC");
+        }
+
+        if(service.HasFeature(Constants.Features.Premium))
+        {
+            UIApplication.SharedApplication.SetMinimumBackgroundFetchInterval(1800);
+        }
+        else
+        {
+            service.FeatureChanged += Service_FeatureChanged;
+        }
+
+        UIApplication.SharedApplication.SetMinimumBackgroundFetchInterval(UIApplication.BackgroundFetchIntervalNever);
+    }
+
+    private void Service_FeatureChanged(object? sender, EventArgs e)
+    {
+        var service = Resolver.Resolve<IFeatureService>();
+
+        if (service!.HasFeature(Constants.Features.Premium))
+        {
+            UIApplication.SharedApplication.SetMinimumBackgroundFetchInterval(1800);
+            service.FeatureChanged -= Service_FeatureChanged;
+        }
+    }
 
     [Export("application:performFetchWithCompletionHandler:")]
     public void PerformFetch(UIApplication application, Action<UIBackgroundFetchResult> completionHandler)

@@ -62,22 +62,5 @@
 	<!--	<PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.0-preview.1" />
 		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.0-preview.1" />-->
 	</ItemGroup>
-	<ItemGroup>
-		<None Remove="Components\" />
-		<None Remove="Microsoft.AppCenter.Crashes" />
-		<None Remove="Microsoft.AppCenter.Analytics" />
-	</ItemGroup>
-	<ItemGroup>
-		<Folder Include="Components\" />
-	</ItemGroup>
-	<ItemGroup>
-		<MauiXaml Update="Views\SubscriptionsView.xaml">
-			<SubType>
-			</SubType>
-		</MauiXaml>
-		<MauiXaml Update="Views\DeadLettersView.xaml">
-			<SubType>
-			</SubType>
-		</MauiXaml>
-	</ItemGroup>
+	
 </Project>

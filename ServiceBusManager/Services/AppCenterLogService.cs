@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
+//using Microsoft.AppCenter.Analytics;
+//using Microsoft.AppCenter.Crashes;
 
 namespace ServiceBusManager.Services
 {
@@ -12,14 +12,14 @@ namespace ServiceBusManager.Services
 
         public Task LogEvent(string eventName, Dictionary<string, string>? properties = null)
         {
-            _ = Task.Run(() => Analytics.TrackEvent(eventName, properties));
+           // _ = Task.Run(() => Analytics.TrackEvent(eventName, properties));
 
             return Task.CompletedTask;
         }
 
         public Task LogException(Exception ex)
         {
-            _ = Task.Run(() => Crashes.TrackError(ex));
+            //_ = Task.Run(() => Crashes.TrackError(ex));
 
             return Task.CompletedTask;
         }
@@ -31,7 +31,7 @@ namespace ServiceBusManager.Services
                 {"PageName", pageName}
             };
 
-            _ = Task.Run(() => Analytics.TrackEvent("PageView", properties));
+            //_ = Task.Run(() => Analytics.TrackEvent("PageView", properties));
 
             return Task.CompletedTask;
         }

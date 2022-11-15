@@ -1,6 +1,6 @@
-﻿using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
+﻿//using Microsoft.AppCenter;
+//using Microsoft.AppCenter.Analytics;
+//using Microsoft.AppCenter.Crashes;
 
 namespace ServiceBusManager;
 
@@ -18,16 +18,14 @@ public partial class App
 
 
         MainPage = new AppShell(viewModel);       
-
-       // SetMainWindowStartSize(1650, 1000);
     }
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        var window =  base.CreateWindow(activationState);
+        var window = base.CreateWindow(activationState);
 
-        window.MaximumHeight = 1000;
-        window.MinimumHeight = 1000;
+        window.MaximumHeight = 800;
+        window.MinimumHeight = 800;
         window.MaximumWidth = 1650;
         window.MinimumWidth = 1650;
 
