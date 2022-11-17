@@ -123,6 +123,22 @@ public sealed partial class MainViewModel : ViewModel
     }
 
     [RelayCommand]
+    private void OpenTopicInfo(string? queue)
+    {
+        if (string.IsNullOrWhiteSpace(queue))
+        {
+            return;
+        }
+
+        ShowInfo = true;
+        ShowPeek = false;
+        ShowDeadLetters = false;
+        ShowSubscriptions = false;
+
+        CurrentTopic = queue;
+    }
+
+    [RelayCommand]
     private void OpenPeek(string? queue)
     {
         if (string.IsNullOrWhiteSpace(queue))

@@ -1,115 +1,170 @@
-﻿using Foundation;
+﻿using System;
+using BackgroundTasks;
+using Foundation;
+using Microsoft.Maui.Controls.Compatibility.Platform.iOS;
+using ServiceBusManager.Platforms.MacCatalyst;
 using UIKit;
+using UserNotifications;
 
 namespace ServiceBusManager;
 
 [Register("AppDelegate")]
 public class AppDelegate : MauiUIApplicationDelegate
 {
-	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+    protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
 
     public override bool FinishedLaunching(UIKit.UIApplication application, NSDictionary launchOptions)
     {
         base.FinishedLaunching(application, launchOptions);
 
+        UNUserNotificationCenter.Current.Delegate = new UserNotificationCenterDelegate();
+
+        // Check we're at least v10.14
+        if (NSProcessInfo.ProcessInfo.IsOperatingSystemAtLeastVersion(new NSOperatingSystemVersion(10, 14, 0)))
+        {
+            // Request notification permissions from the user
+            UNUserNotificationCenter.Current.RequestAuthorization(UNAuthorizationOptions.Alert |
+                UNAuthorizationOptions.Badge |
+                UNAuthorizationOptions.Sound, (approved, err) =>
+                {
+
+                });
+        }
 
         CheckFeature();
-
-        if (launchOptions != null)
-        {
-
-            if (launchOptions.ContainsKey(UIApplication.LaunchOptionsLocalNotificationKey))
-            {
-                var localNotification = launchOptions[UIApplication.LaunchOptionsLocalNotificationKey] as UILocalNotification;
-
-                if (localNotification != null)
-                {
-                    UIApplication.SharedApplication.ApplicationIconBadgeNumber = 0;
-
-                    Shell.Current.GoToAsync("//DeadLetters");
-                }
-            }
-        }
 
         return true;
     }
 
-    private void CheckFeature()
+
+    private bool CheckFeature()
     {
         var service = Resolver.Resolve<IFeatureService>();
 
-        if(service == null)
+        if (service == null)
         {
             throw new ArgumentNullException("Add IFeatureService to IoC");
         }
 
-        if(service.HasFeature(Constants.Features.Premium))
+        if (service.HasFeature(Constants.Features.Premium))
         {
-            UIApplication.SharedApplication.SetMinimumBackgroundFetchInterval(1800);
+            var path = $"{FileSystem.AppDataDirectory}/bglog.txt";
+
+            BGTaskScheduler.Shared.Register("se.hindrikes.azservicebus.fetch", null, (task) =>
+            {
+                File.AppendAllLines(path, new List<string>() { DateTime.Now.ToString() });
+
+
+                var dateTime = DateTimeOffset.UtcNow;
+
+                var service = Resolver.Resolve<IServiceBusService>();
+                var log = Resolver.Resolve<ILogService>();
+
+                if (service == null)
+                {
+                    task.SetTaskCompleted(false);
+                    return;
+                }
+
+                var compareDate = Preferences.Get("LastDeadLetter", dateTime.DateTime);
+
+                var countTask = service.CheckNewDeadLetters(new DateTimeOffset(compareDate));
+                countTask.RunSynchronously();
+
+                if (countTask.Result > 0)
+                {
+                    SendNotification(countTask.Result);
+                }
+
+
+                Preferences.Set("LastDeadLetter", dateTime.DateTime);
+
+                task.SetTaskCompleted(true);
+
+                ScheduleAppRefresh();
+            });
+
+            ScheduleAppRefresh();
+
+            return true;
         }
         else
         {
             service.FeatureChanged += Service_FeatureChanged;
         }
 
-        UIApplication.SharedApplication.SetMinimumBackgroundFetchInterval(UIApplication.BackgroundFetchIntervalNever);
+        return false;
+    }
+
+    private void ScheduleAppRefresh()
+    {
+        var request = new BGAppRefreshTaskRequest("se.hindrikes.azservicebus.fetch");
+        request.EarliestBeginDate = DateTime.Now.AddSeconds(30).ToNSDate();
+
+        BGTaskScheduler.Shared.Submit(request, out var err);
+
+        if (err != null)
+        {
+            var log = Resolver.Resolve<ILogService>();
+
+            if (log != null)
+            {
+                log.LogException(new Exception(err.ToString()));
+            }
+        }
+
+        var path = $"{FileSystem.AppDataDirectory}/bglog.txt";
+
+        File.AppendAllLines(path, new List<string>() { $"{DateTime.Now.ToString()} - Scheduled a refresh" });
     }
 
     private void Service_FeatureChanged(object? sender, EventArgs e)
     {
         var service = Resolver.Resolve<IFeatureService>();
 
-        if (service!.HasFeature(Constants.Features.Premium))
+        if (CheckFeature())
         {
-            UIApplication.SharedApplication.SetMinimumBackgroundFetchInterval(1800);
+            if (service == null)
+            {
+                throw new ArgumentNullException("Add IFeatureService to IoC");
+            }
+
             service.FeatureChanged -= Service_FeatureChanged;
         }
     }
 
-    [Export("application:performFetchWithCompletionHandler:")]
-    public void PerformFetch(UIApplication application, Action<UIBackgroundFetchResult> completionHandler)
+
+
+    private void SendNotification(int badgeNumber)
     {
-        var dateTime = DateTimeOffset.UtcNow;       
+        var shouldSend = Preferences.Default.Get<bool>("Notifications", false);
 
-
-        var service = Resolver.Resolve<IServiceBusService>();
-        var log = Resolver.Resolve<ILogService>();
-
-        if (service == null)
-        {
-            completionHandler(UIBackgroundFetchResult.Failed);
+        if (!shouldSend)
             return;
-        }                  
 
-        var compareDate = Preferences.Get("LastDeadLetter", dateTime.DateTime);
+#if MACCATALYST
+        // Version check
 
-        var countTask = service.CheckNewDeadLetters(new DateTimeOffset(compareDate));
-        countTask.RunSynchronously();
+        var content = new UNMutableNotificationContent();
+        content.Title = "New dead letters";
+        content.Body = "There are new dead letters in your Service Bus";
+        content.Badge = badgeNumber;
 
-        if(countTask.Result > 0)
+        var trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(5, false);
+
+        var requestID = "deadLettersRequest";
+        var request = UNNotificationRequest.FromIdentifier(requestID, content, trigger);
+
+        UIApplication.SharedApplication.ApplicationIconBadgeNumber = 1;
+
+        UNUserNotificationCenter.Current.AddNotificationRequest(request, (err) =>
         {
-            var notification = new UILocalNotification();
-
-            notification.FireDate = NSDate.FromTimeIntervalSinceNow(1);
-
-            notification.AlertAction = "New dead letters";
-            notification.AlertBody = "There are new dead letters in your ServiceBus";
-
-            notification.ApplicationIconBadgeNumber += countTask.Result;
-
-            notification.SoundName = UILocalNotification.DefaultSoundName;
-
-            
-            UIApplication.SharedApplication.ScheduleLocalNotification(notification);
-
-            completionHandler(UIBackgroundFetchResult.NewData);
-        }
-        else
-        {
-            completionHandler(UIBackgroundFetchResult.NoData);
-        }
-
-        Preferences.Set("LastDeadLetter", dateTime.DateTime);
+            if (err != null)
+            {
+                // Do something with error...
+            }
+        });
+#endif
     }
 }
 

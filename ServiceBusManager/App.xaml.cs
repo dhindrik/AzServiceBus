@@ -24,8 +24,8 @@ public partial class App
     {
         var window = base.CreateWindow(activationState);
 
-        window.MaximumHeight = 800;
-        window.MinimumHeight = 800;
+        window.MaximumHeight = 1050;
+        window.MinimumHeight = 1050;
         window.MaximumWidth = 1650;
         window.MinimumWidth = 1650;
 

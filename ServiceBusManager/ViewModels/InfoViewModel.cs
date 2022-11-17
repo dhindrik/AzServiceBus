@@ -26,5 +26,20 @@ public sealed partial class InfoViewModel : ViewModel
 
         IsBusy = false;
     }
+
+    public async Task LoadTopic(string topicName)
+    {
+        try
+        {
+            IsBusy = true;
+            Item = await serviceBusService.GetTopic(topicName);
+        }
+        catch (Exception ex)
+        {
+            HandleException(ex);
+        }
+
+        IsBusy = false;
+    }
 }
 

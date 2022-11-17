@@ -13,7 +13,7 @@
     </ContentPage.Resources>
     <Grid RowDefinitions="Auto,*">
 
-        <Button Margin="0,20" HeightRequest="100" TextColor="White" HorizontalOptions="Start" VerticalOptions="Start" BackgroundColor="Transparent"
+        <Button Margin="0,20" HeightRequest="50" TextColor="White" HorizontalOptions="Start" VerticalOptions="Start" BackgroundColor="Transparent"
                 Command="{Binding MenuCommand}" ToolTipProperties.Text="Open menu">
             <Button.ImageSource>
                 <FontImageSource FontFamily="Icons"
@@ -22,7 +22,7 @@
             </Button.ImageSource>
         </Button>
 
-        <Frame WidthRequest="500" HeightRequest="220" VerticalOptions="Center" HorizontalOptions="Center" IsVisible="{Binding HasNotPremium}"
+        <Frame Grid.RowSpan="2" WidthRequest="500" HeightRequest="220" VerticalOptions="Center" HorizontalOptions="Center" IsVisible="{Binding HasNotPremium}"
                BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}">
             <VerticalStackLayout Spacing="20">
                 <Label Text="Premium required" FontSize="Title" />
@@ -31,10 +31,17 @@
 
             </VerticalStackLayout>
         </Frame>
-        <Grid RowDefinitions="30,*" Grid.Row="1" RowSpacing="20" Margin="20,0" IsVisible="{Binding HasPremium}">
-            <ActivityIndicator Grid.RowSpan="2" IsRunning="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" />
-             <Button HorizontalOptions="Start" VerticalOptions="Start" Command="{Binding RefreshCommand}" Text="Refresh"/>
-            <Grid Grid.Row="1"  IsVisible="{Binding IsNotBusy}" WidthRequest="700" HorizontalOptions="Start">
+        <Grid RowDefinitions="30,30,*" Grid.Row="1" RowSpacing="20" Margin="20,0" IsVisible="{Binding HasPremium}">
+            <ActivityIndicator Grid.RowSpan="3" IsRunning="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" />
+
+            <HorizontalStackLayout Spacing="20" IsVisible="{Binding IsInitialized}">
+                <Switch IsToggled="{Binding GetNotifications}" OnColor="{StaticResource Primary}" />
+                <Label VerticalOptions="Center" FontSize="Medium" Text="Get notifications for dead letters" />
+                <Label IsVisible="{Binding NotificationsNotAllowed}" Text="(Notifications are disabled in System Settings -> Notifications)" TextColor="Red" FontSize="Medium" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <Button IsVisible="{Binding IsNotBusy}" Grid.Row="1" HorizontalOptions="Start" VerticalOptions="Start" Command="{Binding RefreshCommand}" Text="Refresh"/>
+            <Grid Grid.Row="2"  IsVisible="{Binding IsNotBusy}" WidthRequest="700" HorizontalOptions="Start">
                 <CollectionView x:Name="DeadLetters" ItemsSource="{Binding Items}" IsGrouped="True">
                     <CollectionView.EmptyView>
                         <Label Margin="20,0" FontSize="Medium" Text="You are lucky, there are not dead letters!" />

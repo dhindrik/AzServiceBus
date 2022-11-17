@@ -12,11 +12,40 @@
                     Text="{Binding Item.Name}"
                     FontSize="Subtitle"/>
 
-              <Grid Grid.Row="1">
+            <Grid Grid.Row="1" ColumnDefinitions="*,*">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Name" FontSize="Header" />
+                    <Label Text="{Binding Item.Name}" />
 
+                    <Label Text="Lock duration" FontSize="Header" />
+                    <Label Text="{Binding Item.LockDuration}" />
+
+                    <Label Text="Max delivery count" FontSize="Header" />
+                    <Label Text="{Binding Item.MaxDeliveryCount}" />
+                    
+                    <Label Text="Max message size in kilo bytes" FontSize="Header" />
+                    <Label Text="{Binding Item.MaxMessageSizeInKilobytes}" />
+
+                   
+                </VerticalStackLayout>
+
+                 <VerticalStackLayout Grid.Column="1" Spacing="10">
+                   
+                    <Label Text="Max size in mega bytes" FontSize="Header" />
+                    <Label Text="{Binding Item.MaxSizeInMegabytes}" />
+
+                    <Label Text="Status" FontSize="Header" />
+                    <Label Text="{Binding Item.Status}" />
+
+                    <Label Text="Requires session" FontSize="Header" />
+                    <Label Text="{Binding Item.RequiresSession}" />
+
+                     <Label Text="Type" FontSize="Header" />
+                    <Label Text="{Binding Item.Type}" />
+                </VerticalStackLayout>
 
             </Grid>
-   
+
         </Grid>
         <ActivityIndicator IsRunning="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" />
     </Grid>

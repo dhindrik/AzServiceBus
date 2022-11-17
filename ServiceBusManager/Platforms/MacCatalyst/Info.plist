@@ -4,7 +4,7 @@
 <dict>
 	<key>UIDeviceFamily</key>
 	<array>
-		<integer>6</integer>
+		<integer>2</integer>
 	</array>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
@@ -33,5 +33,13 @@
 	<string>public.app-category.developer-tools</string>
 	<key>CFBundleName</key>
 	<string>AzServiceBus</string>
+	<key>CFBundleDisplayName</key>
+	<string>AzServiceBus</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+<array>
+    <string>se.hindrikes.azservicebus.fetch</string>
+</array>
+<key>DTXcode</key>
+<string>1410</string>
 </dict>
 </plist>

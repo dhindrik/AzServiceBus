@@ -10,11 +10,36 @@ public partial class InfoView : ContentView
        {
            if (bindable is InfoView infoView && infoView.Content.BindingContext is InfoViewModel viewModel && newValue is string queueName)
            {
+               if (oldValue == newValue)
+               {
+                   return;
+               }
+
+               infoView.TopicName = null;
+
                MainThread.BeginInvokeOnMainThread(async () => await viewModel.Load(queueName));
 
                Task.Run(async () => await infoView.logService.LogPageView(nameof(InfoView)));
            }
        });
+
+    public static BindableProperty TopicNameProperty = BindableProperty.Create(nameof(TopicName), typeof(string), typeof(InfoView), null, defaultBindingMode: BindingMode.TwoWay,
+      propertyChanged: (bindable, oldValue, newValue) =>
+      {
+          if(oldValue == newValue)
+          {
+              return;
+          }
+
+          if (bindable is InfoView infoView && infoView.Content.BindingContext is InfoViewModel viewModel && newValue is string queueName)
+          {
+              infoView.QueueName = null;
+
+              MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadTopic(queueName));
+
+              Task.Run(async () => await infoView.logService.LogPageView(nameof(InfoView)));
+          }
+      });
 
     public InfoView()
     {
@@ -37,5 +62,11 @@ public partial class InfoView : ContentView
     {
         get => GetValue(QueueNameProperty) as string;
         set => SetValue(QueueNameProperty, value);
+    }
+
+    public string? TopicName
+    {
+        get => GetValue(TopicNameProperty) as string;
+        set => SetValue(TopicNameProperty, value);
     }
 }

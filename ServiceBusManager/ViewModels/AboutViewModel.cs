@@ -7,7 +7,7 @@ public sealed partial class AboutViewModel : ViewModel
 {
     public AboutViewModel()
     {
-        AppVersion = VersionTracking.CurrentVersion;
+        AppVersion = $"{VersionTracking.CurrentVersion}.{VersionTracking.CurrentBuild}";
     }
 
     [ObservableProperty]

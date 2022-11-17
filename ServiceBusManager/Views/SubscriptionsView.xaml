@@ -17,7 +17,7 @@
             </Grid>
 
 
-            <Grid Grid.Row="2" ColumnDefinitions="970,100" RowSpacing="20" ColumnSpacing="20">
+            <Grid Grid.Row="2" ColumnDefinitions="900,100" RowSpacing="20" ColumnSpacing="20">
 
                 <Label Grid.Column="0" Text="Name" Style="{StaticResource HeaderLabel}" />
 
@@ -38,7 +38,7 @@
                                BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}"
                                 HorizontalOptions="Start"
                                 Padding="10">
-                                <Grid ColumnDefinitions="860,70,120" RowSpacing="20" ColumnSpacing="20" Padding="0,0" HorizontalOptions="Fill">
+                                <Grid ColumnDefinitions="810,70,120" RowSpacing="20" ColumnSpacing="20" Padding="0,0" HorizontalOptions="Fill">
                                   
                                     <Label Text="{Binding Name}" VerticalOptions="Center" />
                                    

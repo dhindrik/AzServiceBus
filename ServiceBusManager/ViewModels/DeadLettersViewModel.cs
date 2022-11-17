@@ -1,5 +1,11 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
+using Foundation;
+
+#if MACCATALYST
+using UIKit;
+using UserNotifications;
+#endif
 
 namespace ServiceBusManager.ViewModels;
 
@@ -21,13 +27,28 @@ public sealed partial class DeadLettersViewModel : ViewModel
             IsBusy = true;
 
             await LoadData();
+
+            GetNotifications = Preferences.Default.Get<bool>("Notifications", false);
+
+#if MACCATALYST
+            var settings = await UNUserNotificationCenter.Current.GetNotificationSettingsAsync();
+
+            NotificationsNotAllowed = settings.AuthorizationStatus == UNAuthorizationStatus.Denied;
+#endif
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             HandleException(ex);
         }
 
         IsBusy = false;
+    }
+
+    public override async Task OnAppearing()
+    {
+        await base.OnAppearing();
+
+        await Refresh();
     }
 
     private async Task LoadData()
@@ -73,6 +94,12 @@ public sealed partial class DeadLettersViewModel : ViewModel
     [ObservableProperty]
     private ObservableCollection<CollectionGroup<DeadLetterInfo>> items = new();
 
+    [ObservableProperty]
+    private bool getNotifications;
+
+    [ObservableProperty]
+    private bool notificationsNotAllowed;
+
     [RelayCommand]
     public async Task ShowPremium()
     {
@@ -95,6 +122,12 @@ public sealed partial class DeadLettersViewModel : ViewModel
             IsBusy = true;
 
             await LoadData();
+
+#if MACCATALYST
+            var settings = await UNUserNotificationCenter.Current.GetNotificationSettingsAsync();
+
+            NotificationsNotAllowed = settings.AuthorizationStatus == UNAuthorizationStatus.Denied;
+#endif
         }
         catch (Exception ex)
         {
@@ -102,6 +135,14 @@ public sealed partial class DeadLettersViewModel : ViewModel
         }
 
         IsBusy = false;
+    }
+
+    partial void OnGetNotificationsChanged(bool value)
+    {
+        if(IsInitialized)
+        {
+            _ = Task.Run(() => Preferences.Default.Set("Notifications", value));
+        }
     }
 }
 

@@ -77,6 +77,30 @@ public sealed class ServiceBusService : IServiceBusService
         return queueNames;
     }
 
+    public async Task<QueueOrTopic> GetTopic(string name)
+    {
+        if (adminClient == null)
+        {
+            throw new Exception("You must run init first");
+        }
+
+        var topic = await adminClient.GetTopicAsync(name);
+
+
+        var result = new QueueOrTopic()
+        {
+            Name = topic.Value.Name,
+            DefaultMessageTimeToLive = topic.Value.DefaultMessageTimeToLive,
+            MaxMessageSizeInKilobytes = topic.Value.MaxMessageSizeInKilobytes,
+            MaxSizeInMegabytes = topic.Value.MaxSizeInMegabytes,
+            Status = topic.Value.Status,
+            Type = EntityType.Topic
+        };
+        
+
+        return result;
+    }
+
     public async Task<List<QueueOrTopic>> GetTopics()
     {
         if (adminClient == null)
