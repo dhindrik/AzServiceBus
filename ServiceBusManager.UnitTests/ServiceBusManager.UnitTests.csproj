@@ -26,7 +26,6 @@
   <ItemGroup>
     <None Remove="NSubstitute" />
     <None Remove="FluentAssertions" />
-    <None Remove="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ServiceBusManager\ServiceBusManager.csproj" />
