@@ -1,6 +1,7 @@
 ﻿
 using System;
 using Microsoft.Maui.Controls;
+using ServiceBusManager.Models;
 using TinyMvvm;
 
 namespace ServiceBusManager.UnitTests;
@@ -27,7 +28,7 @@ public class ConnectViewModelTests
     }
 
     [Fact]
-    public async Task OnParameterSetTest_2()
+    public async Task OnParameterSetTest_InvalidValue()
     {
         //Arrange
         var connectionService = Substitute.For<IConnectionService>();
@@ -90,6 +91,35 @@ public class ConnectViewModelTests
         Received.InOrder(async () =>
         {
             await viewModel.Navigation.NavigateTo($"///{nameof(MainViewModel)}", viewModel.ConnectionString);
+        });
+    }
+
+    [Fact]
+    public void SaveAndConnectToNewCommandTest()
+    {
+        //Arrange
+        var connectionService = Substitute.For<IConnectionService>();
+
+        var featureService = Substitute.For<IFeatureService>();
+        var logService = Substitute.For<ILogService>();
+
+        TinyNavigation.Current = Substitute.For<TinyMvvm.INavigation>();
+
+        var name = "Test";
+        var connectionString = "Test";
+
+        var viewModel = new ConnectViewModel(connectionService, featureService, logService);
+        viewModel.Name = name;
+        viewModel.ConnectionString = connectionString;
+
+        //Act
+        viewModel.SaveAndConnectToNewCommand.Execute(null);
+
+        //Assert
+        Received.InOrder(async () =>
+        {
+            await connectionService.Save(Arg.Is<ConnectionInfo>(x => x.Name == name && x.Value == connectionString));
+            await viewModel.Navigation.NavigateTo($"///{nameof(MainViewModel)}", connectionString);
         });
     }
 }
