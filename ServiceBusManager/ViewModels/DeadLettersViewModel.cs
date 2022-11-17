@@ -1,10 +1,11 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
-using Foundation;
+
 
 #if MACCATALYST
 using UIKit;
 using UserNotifications;
+using Foundation;
 #endif
 
 namespace ServiceBusManager.ViewModels;
@@ -13,7 +14,7 @@ public sealed partial class DeadLettersViewModel : ViewModel
 {
     private readonly IServiceBusService serviceBusService;
 
-    public DeadLettersViewModel(IServiceBusService serviceBusService)
+    public DeadLettersViewModel(IServiceBusService serviceBusService, ILogService logService) : base(logService)
     {
         this.serviceBusService = serviceBusService;
     }

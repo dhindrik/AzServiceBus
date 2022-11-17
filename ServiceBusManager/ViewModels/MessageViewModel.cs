@@ -6,7 +6,7 @@ public sealed partial class MessageViewModel : ViewModel
 
     private List<ServiceBusReceivedMessage> selectedMessages = new List<ServiceBusReceivedMessage>();
 
-    public MessageViewModel(IServiceBusService serviceBusService)
+    public MessageViewModel(IServiceBusService serviceBusService, ILogService logService) : base(logService)
     {
         this.serviceBusService = serviceBusService;
 

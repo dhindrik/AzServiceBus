@@ -4,7 +4,7 @@ public sealed partial class InfoViewModel : ViewModel
 {
     private readonly IServiceBusService serviceBusService;
 
-    public InfoViewModel(IServiceBusService serviceBusService)
+    public InfoViewModel(IServiceBusService serviceBusService, ILogService logService) : base(logService)
     {
         this.serviceBusService = serviceBusService;
     }

@@ -6,7 +6,7 @@ public sealed partial class MessageDetailsViewModel : ViewModel
 
     private string? topicName;
 
-    public MessageDetailsViewModel(IServiceBusService serviceBusService)
+    public MessageDetailsViewModel(IServiceBusService serviceBusService, ILogService logService) : base(logService)
     {
         this.serviceBusService = serviceBusService;
 

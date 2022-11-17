@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using ServiceBusManager.Helpers;
 
 namespace ServiceBusManager.ViewModels;
 
@@ -7,7 +8,7 @@ public sealed partial class ConnectViewModel : ViewModel
     private readonly IConnectionService connectionService;
     private readonly IFeatureService featureService;
 
-    public ConnectViewModel(IConnectionService connectionService, IFeatureService featureService)
+    public ConnectViewModel(IConnectionService connectionService, IFeatureService featureService, ILogService logService) : base(logService)
     {
         this.connectionService = connectionService;
         this.featureService = featureService;
@@ -113,9 +114,9 @@ public sealed partial class ConnectViewModel : ViewModel
             return;
         }
 
-        if (!MainThread.IsMainThread)
+        if (!MainThreadHelper.IsMainThread)
         {
-            MainThread.BeginInvokeOnMainThread(async () => await OpenConnection());
+            MainThreadHelper.BeginInvokeOnMainThread(async () => await OpenConnection());
             return;
         }
 

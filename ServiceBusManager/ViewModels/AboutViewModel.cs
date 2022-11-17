@@ -5,7 +5,7 @@ namespace ServiceBusManager.ViewModels;
 
 public sealed partial class AboutViewModel : ViewModel
 {
-    public AboutViewModel()
+    public AboutViewModel(ILogService logService) : base(logService)
     {
         AppVersion = $"{VersionTracking.CurrentVersion}.{VersionTracking.CurrentBuild}";
     }

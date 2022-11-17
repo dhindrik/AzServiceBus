@@ -7,7 +7,7 @@ public sealed partial class MainViewModel : ViewModel
     private readonly IServiceBusService serviceBusService;
     private readonly IConnectionService connectionService;
 
-    public MainViewModel(IServiceBusService serviceBusService, IConnectionService connectionService)
+    public MainViewModel(IServiceBusService serviceBusService, IConnectionService connectionService, ILogService logService) : base(logService)
     {
         this.serviceBusService = serviceBusService;
         this.connectionService = connectionService;

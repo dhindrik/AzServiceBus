@@ -6,7 +6,7 @@ namespace ServiceBusManager.ViewModels;
 
 public sealed partial class PremiumViewModel : ViewModel
 {
-    public PremiumViewModel(IFeatureService featureService)
+    public PremiumViewModel(IFeatureService featureService, ILogService logService) : base(logService)
     {
         this.featureService = featureService;
     }

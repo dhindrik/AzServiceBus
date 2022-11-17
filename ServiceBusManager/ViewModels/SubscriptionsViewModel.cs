@@ -4,7 +4,7 @@ public sealed partial class SubscriptionsViewModel : ViewModel
 {
     private readonly IServiceBusService serviceBusService;
 
-    public SubscriptionsViewModel(IServiceBusService serviceBusService)
+    public SubscriptionsViewModel(IServiceBusService serviceBusService, ILogService logService) : base(logService)
     {
         this.serviceBusService = serviceBusService;
     }
