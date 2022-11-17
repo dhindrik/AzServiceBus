@@ -70,6 +70,8 @@ public sealed partial class PremiumViewModel : ViewModel
             if (result != null && result.State == PurchaseState.Purchased)
             {
                 featureService.AddFeature(Constants.Features.Premium);
+
+                await Finalize(result.TransactionIdentifier);
             }
         }
         catch (Exception ex)
@@ -95,6 +97,8 @@ public sealed partial class PremiumViewModel : ViewModel
             if (result != null && result.State == PurchaseState.Purchased)
             {
                 featureService.AddFeature(Constants.Features.Premium, DateTime.Now.AddMonths(1));
+
+                await Finalize(result.TransactionIdentifier);
             }
         }
         catch (Exception ex)
@@ -120,6 +124,8 @@ public sealed partial class PremiumViewModel : ViewModel
             if (result != null && result.State == PurchaseState.Purchased)
             {
                 featureService.AddFeature(Constants.Features.Premium, DateTime.Now.AddYears(1));
+
+                await Finalize(result.TransactionIdentifier);
             }
         }
         catch (Exception ex)
@@ -180,6 +186,20 @@ public sealed partial class PremiumViewModel : ViewModel
 
             return false;
 
+    }
+
+    private async Task Finalize(string identifier)
+    {
+        var finalized = false;
+
+        while (!finalized)
+        {
+            await Task.Delay(1000);
+
+            var finalizeResult = await CrossInAppBilling.Current.FinalizePurchaseAsync(identifier);
+
+            finalized = finalizeResult.Single(x => x.Id == identifier).Success;
+        }
     }
 }
 
