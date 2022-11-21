@@ -15,81 +15,97 @@
                                  Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
             </Button.ImageSource>
         </Button>
-         <ActivityIndicator IsRunning="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" />
+        <ActivityIndicator IsRunning="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" />
         <Frame WidthRequest="600" HeightRequest="600" VerticalOptions="Center" HorizontalOptions="Center"
                BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}"
                IsVisible="{Binding IsNotBusy}">
             <Grid>
-                <VerticalStackLayout Spacing="40">
-                    <Label Text="Premium" FontSize="Title" />
-                    <VerticalStackLayout Spacing="10">
-                        <Label Text="Reasons to get premium:" FontSize="Medium" />
-                        <Grid ColumnDefinitions="40,*">
-                            <Image VerticalOptions="Center">
-                                <Image.Source>
-                                    <FontImageSource FontFamily="Icons"
+                <Grid IsVisible="{Binding HasNotPremium}">
+                    <VerticalStackLayout Spacing="40">
+                        <Label Text="Premium" FontSize="Title" />
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="Reasons to get premium:" FontSize="Medium" />
+                            <Grid ColumnDefinitions="40,*">
+                                <Image VerticalOptions="Center">
+                                    <Image.Source>
+                                        <FontImageSource FontFamily="Icons"
                                  Glyph="&#xF720;"
                                  Size="22"
                                  Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
-                                </Image.Source>
-                            </Image>
+                                    </Image.Source>
+                                </Image>
 
-                            <Label Grid.Column="1" VerticalOptions="Center" Text="Premium features" FontSize="Medium" />
+                                <Label Grid.Column="1" VerticalOptions="Center" Text="Premium features" FontSize="Medium" />
 
-                        </Grid>
+                            </Grid>
 
-                        <Grid ColumnDefinitions="40,*">
-                            <Image VerticalOptions="Center">
-                                <Image.Source>
-                                    <FontImageSource FontFamily="Icons"
+                            <Grid ColumnDefinitions="40,*">
+                                <Image VerticalOptions="Center">
+                                    <Image.Source>
+                                        <FontImageSource FontFamily="Icons"
                                  Glyph="&#xF720;"
                                  Size="22"
                                  Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
-                                </Image.Source>
-                            </Image>
+                                    </Image.Source>
+                                </Image>
 
-                            <Label Grid.Column="1" VerticalOptions="Center" Text="Support the development of the app" FontSize="Medium" />
+                                <Label Grid.Column="1" VerticalOptions="Center" Text="Support the development of the app" FontSize="Medium" />
 
-                        </Grid>
+                            </Grid>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="10">
+                            <Label FontSize="Subtitle">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Premium - Lifetime" />
+                                        <Span Text=" - " />
+                                        <Span Text="{Binding LifePrice}" />
+                                    </FormattedString>
+
+                                </Label.FormattedText>
+                            </Label>
+                            <Label Text="Get premium for lifetime" />
+
+                            <Button Text="Purchase Premium - Lifetime" Command="{Binding BuyLifetimeCommand}" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="10">
+                            <Label FontSize="Subtitle">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Premium - Subscription" />
+                                        <Span Text=" - " />
+                                        <Span Text="{Binding MonthPrice}" />
+                                        <Span Text="/month | " />
+                                        <Span Text="{Binding YearPrice}" />
+                                        <Span Text="/year " />
+                                    </FormattedString>
+
+                                </Label.FormattedText>
+                            </Label>
+                            <Label Text="Get premium for 1 month or 1 year. Subscription will auto-renew." />
+
+                            <Button Text="Purchase 1 month subscription" Command="{Binding BuyLifetimeCommand}" />
+                            <Button Text="Purchase 1 year subscription" Command="{Binding BuyYearlyCommand}" />
+                        </VerticalStackLayout>
+
+                        <Button Text="Restore purchase" />
                     </VerticalStackLayout>
-                    <VerticalStackLayout Spacing="10">
-                        <Label FontSize="Subtitle">
-                            <Label.FormattedText>
-                                <FormattedString>
-                                    <Span Text="Premium - Lifetime" />
-                                    <Span Text=" - " />
-                                    <Span Text="{Binding LifePrice}" />
-                                </FormattedString>
-
-                            </Label.FormattedText>
-                        </Label>
-                        <Label Text="Get premium for lifetime" />
-
-                        <Button Text="Purchase Premium - Lifetime" Command="{Binding BuyLifetimeCommand}" />
+                </Grid>
+                <Grid IsVisible="{Binding HasPremium}">
+                    <VerticalStackLayout Spacing="20">
+                        <Image HorizontalOptions="Center">
+                            <Image.Source>
+                             <FontImageSource FontFamily="Icons"
+                                 Glyph="&#xF720;"
+                                 Size="72"
+                                 Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+                            </Image.Source>
+                        </Image>
+                        <Label Text="You are a premium user!" FontSize="Large" HorizontalTextAlignment="Center"/>
+                         <Label FontSize="Medium" HorizontalTextAlignment="Center" Text="To manage your subscriptions, go to System Settings." />
                     </VerticalStackLayout>
-                    <VerticalStackLayout Spacing="10">
-                        <Label FontSize="Subtitle">
-                            <Label.FormattedText>
-                                <FormattedString>
-                                    <Span Text="Premium - Subscription" />
-                                    <Span Text=" - " />
-                                    <Span Text="{Binding MonthPrice}" />
-                                    <Span Text="/month | " />
-                                    <Span Text="{Binding YearPrice}" />
-                                    <Span Text="/year " />
-                                </FormattedString>
-
-                            </Label.FormattedText>
-                        </Label>
-                        <Label Text="Get premium for 1 month or 1 year. Subscription will auto-renew." />
-
-                        <Button Text="Purchase 1 month subscription" Command="{Binding BuyLifetimeCommand}" />
-                        <Button Text="Purchase 1 year subscription" Command="{Binding BuyYearlyCommand}" />
-                    </VerticalStackLayout>
-
-                    <Button Text="Restore purchase" />
-                </VerticalStackLayout>
-
+                   
+                </Grid>
             </Grid>
         </Frame>
     </Grid>

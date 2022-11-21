@@ -65,12 +65,12 @@
                                 Padding="10"> 
                         <Grid ColumnDefinitions="20,300,200,200,120,100" RowSpacing="20" ColumnSpacing="20" Padding="0,0" HorizontalOptions="Start">
                             <controls:CustomCheckBox Color="{StaticResource Primary}" VerticalOptions="Center" ToggleCommand="{Binding Source={x:Reference Messages}, Path=BindingContext.ToggleMessageSelectedCommand}" />
-                            <Label Grid.Column="1" Text="{Binding MessageId}" VerticalOptions="Center" />
-                            <Label Grid.Column="2" Text="{Binding EnqueuedTime}" VerticalOptions="Center" />
-                            <Label Grid.Column="3" Text="{Binding DeliveryCount}" HorizontalOptions="Center" VerticalOptions="Center" />
-                            <Label Grid.Column="4" Text="{Binding Subject}" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding MessageId, Mode=OneTime}" VerticalOptions="Center" />
+                            <Label Grid.Column="2" Text="{Binding EnqueuedTime, Mode=OneTime}" VerticalOptions="Center" />
+                            <Label Grid.Column="3" Text="{Binding DeliveryCount, Mode=OneTime}" HorizontalOptions="Center" VerticalOptions="Center" />
+                            <Label Grid.Column="4" Text="{Binding Subject, Mode=OneTime}" VerticalOptions="Center" />
                             
-                            <Button Grid.Column="5" Text="Open" Command="{Binding Source={x:Reference Messages}, Path=BindingContext.ShowDetailsCommand}" CommandParameter="{Binding}" />
+                            <Button Grid.Column="5" Text="Open" Command="{Binding Source={x:Reference Messages}, Path=BindingContext.ShowDetailsCommand, Mode=OneTime}" CommandParameter="{Binding}" />
 
                         </Grid>
                             </Frame>

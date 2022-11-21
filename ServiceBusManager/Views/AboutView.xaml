@@ -14,17 +14,33 @@
             </Button.ImageSource>
         </Button>
 
-        <Frame WidthRequest="500" HeightRequest="200" VerticalOptions="Center" HorizontalOptions="Center" BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}">
+        <Frame WidthRequest="500" HeightRequest="300" VerticalOptions="Center" HorizontalOptions="Center" BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}">
             <Grid>
                 <VerticalStackLayout Spacing="10">
                     <Label Text="About" FontSize="Title" />
 
                     <Grid>
-                        <Label Text="App version" FontAttributes="Bold" />
+                        <Label Text="App version" FontSize="Medium" />
                         <Label HorizontalOptions="End" Text="{Binding AppVersion}" />
                     </Grid>
+                     <Label Text="Path to log files:" FontSize="Medium" FontAttributes="Bold" />
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="{Binding LogPath}" VerticalOptions="Center" />
+                        <Image Grid.Column="1" VerticalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource FontFamily="Icons"
+                                    Glyph="&#xEEB3;"
+                                                 Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                                                 Size="18"/>
+                            </Image.Source>
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding CopyLogPathCommand}" />
 
-                    <Label Text="This app is built using .NET MAUI." />
+                            </Image.GestureRecognizers>
+                        </Image>
+                        </Grid>
+
+     
                 </VerticalStackLayout>
                 <HorizontalStackLayout Spacing="20" VerticalOptions="End" HorizontalOptions="End">
                     <Button Text="Privacy Policy" Command="{Binding PrivacyCommand}" />

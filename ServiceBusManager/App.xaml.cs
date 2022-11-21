@@ -14,6 +14,7 @@ public partial class App
 //        AppCenter.Start(SecretKeys.AppCenterProd, typeof(Analytics), typeof(Crashes));
 //#else
 //        AppCenter.Start(SecretKeys.AppCenterDev, typeof(Analytics), typeof(Crashes));
+//        AppCenter.LogLevel = LogLevel.Verbose;
 //#endif
 
 

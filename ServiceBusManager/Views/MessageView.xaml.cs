@@ -14,7 +14,6 @@ public partial class MessageView
         if (bindable is MessageView messageView  && messageView.MainContent.BindingContext is MessageViewModel viewModel && newValue is string queueName)
         {
             MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadMessages(queueName));
-            Task.Run(async () => await messageView.logService.LogPageView(nameof(MessageView)));
         }
     });
 
@@ -24,7 +23,6 @@ public partial class MessageView
            if (bindable is MessageView messageView && messageView.Content.BindingContext is MessageViewModel viewModel && newValue is string queueName)
            {
                MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadMessages(queueName, true));
-               Task.Run(async () => await messageView.logService.LogPageView(nameof(MessageView)));
            }
        });
 
@@ -35,7 +33,6 @@ public partial class MessageView
          if (bindable is MessageView messageView && messageView.Content.BindingContext is MessageViewModel viewModel && newValue is string queueName)
          {
              MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadMessages(queueName, false, true));
-             Task.Run(async () => await messageView.logService.LogPageView(nameof(MessageView)));
          }
      });
 
@@ -45,7 +42,6 @@ public partial class MessageView
           if (bindable is MessageView messageView && messageView.Content.BindingContext is MessageViewModel viewModel && newValue is string queueName)
           {
               MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadMessages(queueName, true, true));
-              Task.Run(async () => await messageView.logService.LogPageView(nameof(MessageView)));
           }
       });
 
@@ -99,5 +95,15 @@ public partial class MessageView
     protected override void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         base.OnPropertyChanged(propertyName);
+    }
+
+    protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        base.OnPropertyChanged(propertyName);
+
+        if (propertyName == nameof(IsVisible) && IsVisible)
+        {
+            Task.Run(async () => await logService.LogPageView(nameof(MessageView)));
+        }
     }
 }

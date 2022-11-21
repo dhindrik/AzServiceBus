@@ -17,21 +17,33 @@ public class AppDelegate : MauiUIApplicationDelegate
     {
         base.FinishedLaunching(application, launchOptions);
 
-        UNUserNotificationCenter.Current.Delegate = new UserNotificationCenterDelegate();
-
-        // Check we're at least v10.14
-        if (NSProcessInfo.ProcessInfo.IsOperatingSystemAtLeastVersion(new NSOperatingSystemVersion(10, 14, 0)))
+        try
         {
-            // Request notification permissions from the user
-            UNUserNotificationCenter.Current.RequestAuthorization(UNAuthorizationOptions.Alert |
-                UNAuthorizationOptions.Badge |
-                UNAuthorizationOptions.Sound, (approved, err) =>
-                {
+            UNUserNotificationCenter.Current.Delegate = new UserNotificationCenterDelegate();
 
-                });
+            // Check we're at least v10.14
+            if (NSProcessInfo.ProcessInfo.IsOperatingSystemAtLeastVersion(new NSOperatingSystemVersion(10, 14, 0)))
+            {
+                // Request notification permissions from the user
+                UNUserNotificationCenter.Current.RequestAuthorization(UNAuthorizationOptions.Alert |
+                    UNAuthorizationOptions.Badge |
+                    UNAuthorizationOptions.Sound, (approved, err) =>
+                    {
+
+                    });
+            }
+
+            CheckFeature();
         }
+        catch (Exception ex)
+        {
+            var service = Resolver.Resolve<ILogService>();
 
-        CheckFeature();
+            if(service != null)
+            {
+                service.LogException(ex);
+            }
+        }
 
         return true;
     }
@@ -52,13 +64,20 @@ public class AppDelegate : MauiUIApplicationDelegate
 
             BGTaskScheduler.Shared.Register("se.hindrikes.azservicebus.fetch", null, (task) =>
             {
+                var log = Resolver.Resolve<ILogService>();
+
+                if (log != null)
+                {
+                    log.LogEvent("BackgroundFetchStarting");
+                }
+
                 File.AppendAllLines(path, new List<string>() { DateTime.Now.ToString() });
 
 
                 var dateTime = DateTimeOffset.UtcNow;
 
                 var service = Resolver.Resolve<IServiceBusService>();
-                var log = Resolver.Resolve<ILogService>();
+               
 
                 if (service == null)
                 {
@@ -81,6 +100,12 @@ public class AppDelegate : MauiUIApplicationDelegate
 
                 task.SetTaskCompleted(true);
 
+                if (log != null)
+                {
+                    log.LogEvent("BackgroundFetchCompleted");
+                }
+
+
                 ScheduleAppRefresh();
             });
 
@@ -102,20 +127,21 @@ public class AppDelegate : MauiUIApplicationDelegate
         request.EarliestBeginDate = DateTime.Now.AddSeconds(30).ToNSDate();
 
         BGTaskScheduler.Shared.Submit(request, out var err);
-
+        var log = Resolver.Resolve<ILogService>();
         if (err != null)
         {
-            var log = Resolver.Resolve<ILogService>();
-
             if (log != null)
             {
                 log.LogException(new Exception(err.ToString()));
             }
         }
 
-        var path = $"{FileSystem.AppDataDirectory}/bglog.txt";
+        
 
-        File.AppendAllLines(path, new List<string>() { $"{DateTime.Now.ToString()} - Scheduled a refresh" });
+        if(log != null)
+        {
+            log.LogEvent(nameof(ScheduleAppRefresh));
+        }
     }
 
     private void Service_FeatureChanged(object? sender, EventArgs e)

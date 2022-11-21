@@ -57,7 +57,7 @@ public sealed partial class MainViewModel : ViewModel
                     topicGroup
                 };
 
-            Queues = new ObservableCollection<CollectionGroup<QueueOrTopic>>(items);
+            Queues = new List<CollectionGroup<QueueOrTopic>>(items);
             ServiceBusNamespace = await serviceBusService.GetNamepspace();
 
         }
@@ -89,7 +89,7 @@ public sealed partial class MainViewModel : ViewModel
     private bool showSubscriptions;
 
     [ObservableProperty]
-    private ObservableCollection<CollectionGroup<QueueOrTopic>> queues = new();
+    private List<CollectionGroup<QueueOrTopic>> queues = new();
 
     [ObservableProperty]
     private string? connectionString;
@@ -146,7 +146,11 @@ public sealed partial class MainViewModel : ViewModel
             return;
         }
 
-        CurrentQueue = queue;
+        if (!queue.Contains($"{CurrentTopic}/"))
+        {
+            CurrentQueue = queue;
+        }
+
         currentQueueOrTopic = queue;
 
         ShowInfo = false;

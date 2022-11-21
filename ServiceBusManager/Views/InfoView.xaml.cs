@@ -1,4 +1,6 @@
-﻿namespace ServiceBusManager.Views;
+﻿using System.Runtime.CompilerServices;
+
+namespace ServiceBusManager.Views;
 
 public partial class InfoView : ContentView
 {
@@ -18,8 +20,6 @@ public partial class InfoView : ContentView
                infoView.TopicName = null;
 
                MainThread.BeginInvokeOnMainThread(async () => await viewModel.Load(queueName));
-
-               Task.Run(async () => await infoView.logService.LogPageView(nameof(InfoView)));
            }
        });
 
@@ -37,7 +37,7 @@ public partial class InfoView : ContentView
 
               MainThread.BeginInvokeOnMainThread(async () => await viewModel.LoadTopic(queueName));
 
-              Task.Run(async () => await infoView.logService.LogPageView(nameof(InfoView)));
+              
           }
       });
 
@@ -68,5 +68,15 @@ public partial class InfoView : ContentView
     {
         get => GetValue(TopicNameProperty) as string;
         set => SetValue(TopicNameProperty, value);
+    }
+
+    protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        base.OnPropertyChanged(propertyName);
+
+        if(propertyName == nameof(IsVisible) && IsVisible)
+        {
+            Task.Run(async () => await logService.LogPageView(nameof(InfoView)));
+        }
     }
 }

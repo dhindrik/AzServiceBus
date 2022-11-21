@@ -24,13 +24,15 @@
 		<ApplicationIdGuid>43681C5C-733E-4899-B69F-32C627F37BA2</ApplicationIdGuid>
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>10</ApplicationVersion>
+		<ApplicationVersion>14</ApplicationVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+
+		
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">
@@ -41,17 +43,19 @@
 		<CodesignProvision>AzServiceBusDist</CodesignProvision>
 		<CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>
 		<EnablePackageSigning>true</EnablePackageSigning>
+		<_LibMonoLinkMode>Static</_LibMonoLinkMode>
+<_LibXamarinLinkMode>Static</_LibXamarinLinkMode>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
 		<EnableCodeSigning>False</EnableCodeSigning>
 		<CodesignKey>Apple Development: Created via API (C65YK5VCL5)</CodesignKey>
 		<CodesignProvision>AzServiceBusDebug</CodesignProvision>
 		<!--<CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>-->
-		<CreatePackage>false</CreatePackage>
+		<CreatePackage>True</CreatePackage>
 	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#118AB2" BaseSize="1000,1000" />
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" />
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
 		<!-- Images -->
@@ -67,11 +71,13 @@
 		<PackageReference Include="Plugin.InAppBilling" Version="6.7.0" />
 	<!--	<PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.0-preview.1" />
 		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.0-preview.1" />-->
+		<PackageReference Include="CommunityToolkit.Maui" Version="3.0.0" />
 	</ItemGroup>
 	
 	<ItemGroup>
 	  <None Remove="Plugin.LocalNotification" />
 	  <None Remove="Helpers\" />
+	  <None Remove="CommunityToolkit.Maui" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Helpers\" />

@@ -17,7 +17,8 @@ global using TinyMvvm;
 global using CommunityToolkit.Mvvm;
 global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
-
+global using CommunityToolkit.Maui;
+global using CommunityToolkit.Maui.Alerts;
 
 namespace ServiceBusManager;
 
@@ -26,18 +27,20 @@ public static class MauiProgram
 	public static MauiApp CreateMauiApp()
 	{
 		var builder = MauiApp.CreateBuilder();
-		builder
-			.UseMauiApp<App>()
-			.ConfigureFonts(fonts =>
-			{
-				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+        builder
+            .UseMauiApp<App>()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("fluent-icons.ttf", "Icons");
             })
-			.UseTinyMvvm()
-			.RegisterServices();
+            .UseTinyMvvm()
+            .UseMauiCommunityToolkit()
+            .RegisterServices();
+            
 
-		RegisterRoutes();
+        RegisterRoutes();
 
         builder.Services.AddMauiBlazorWebView();
 #if DEBUG
@@ -54,7 +57,7 @@ public static class MauiProgram
 
 	private static void RegisterServices(this MauiAppBuilder builder)
     {
-        builder.Services.AddSingleton<ILogService, AppCenterLogService>();
+        builder.Services.AddSingleton<ILogService, FileLogService>();
         builder.Services.AddSingleton<IFeatureService, FeatureService>();
 
 		builder.Services.AddSingleton<IServiceBusService, ServiceBusService>();

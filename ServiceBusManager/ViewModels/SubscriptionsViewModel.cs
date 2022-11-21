@@ -62,7 +62,7 @@ public sealed partial class SubscriptionsViewModel : ViewModel
             return;
         }
 
-        RunAction("DeadLetters", subscription.Name);
+        RunAction("OpenDeadLetters", subscription.Name);
     }
 
     private async Task LoadData()

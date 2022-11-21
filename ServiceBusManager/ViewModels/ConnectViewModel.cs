@@ -124,6 +124,10 @@ public sealed partial class ConnectViewModel : ViewModel
             await HandleException(ex, "Could not save connection");
         }
         await OpenConnection();
+
+        ShowNew = false;
+        ShowConnections = true;
+
     }
 
     [RelayCommand]
