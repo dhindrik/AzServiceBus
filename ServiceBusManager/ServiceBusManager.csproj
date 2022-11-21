@@ -1,27 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 	<PropertyGroup>
-		<TargetFrameworks>net7.0;net7.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks>net7.0-maccatalyst;net7.0;</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!--	<TargetFrameworks>$(TargetFrameworks);net6.0-tizen</TargetFrameworks> -->
 		<OutputType Condition="'$(TargetFramework)' == 'net7.0-maccatalyst'">Exe</OutputType>
 		<OutputType Condition="'$(TargetFramework)' == 'net7.0'">Library</OutputType>
 		<RootNamespace>ServiceBusManager</RootNamespace>
-		<AssemblyName>AzServiceBus</AssemblyName>
+		<AssemblyName Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">AzServiceBus</AssemblyName>
+		<AssemblyName Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">AzServiceBus Debug</AssemblyName>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<EnableDefaultCssItems>false</EnableDefaultCssItems>
 		<!-- Display name -->
-		<ApplicationTitle>AzServiceBus</ApplicationTitle>
+		<ApplicationTitle Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">AzServiceBus</ApplicationTitle>
+		<ApplicationTitle Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">AzServiceBus Debug</ApplicationTitle>
 		<!-- App Identifier -->
-		<ApplicationId>hindrikes.se.azservicebus</ApplicationId>
+		<ApplicationId Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">hindrikes.se.azservicebus.debug</ApplicationId>
+		<ApplicationId Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">hindrikes.se.azservicebus</ApplicationId>
 		<ApplicationIdGuid>43681C5C-733E-4899-B69F-32C627F37BA2</ApplicationIdGuid>
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>9</ApplicationVersion>
+		<ApplicationVersion>10</ApplicationVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
@@ -40,9 +43,9 @@
 		<EnablePackageSigning>true</EnablePackageSigning>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
-		<EnableCodeSigning>True</EnableCodeSigning>
+		<EnableCodeSigning>False</EnableCodeSigning>
 		<CodesignKey>Apple Development: Created via API (C65YK5VCL5)</CodesignKey>
-		<CodesignProvision>AzServiceBusDev</CodesignProvision>
+		<CodesignProvision>AzServiceBusDebug</CodesignProvision>
 		<!--<CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>-->
 		<CreatePackage>false</CreatePackage>
 	</PropertyGroup>

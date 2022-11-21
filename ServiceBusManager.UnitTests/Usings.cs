@@ -1,5 +1,7 @@
-﻿global using Xunit;
-global using ServiceBusManager.ViewModels;
+﻿global using FluentAssertions;
 global using NSubstitute;
+global using ServiceBusManager.Models;
 global using ServiceBusManager.Services;
-global using FluentAssertions;
+global using ServiceBusManager.ViewModels;
+global using TinyMvvm;
+global using Xunit;

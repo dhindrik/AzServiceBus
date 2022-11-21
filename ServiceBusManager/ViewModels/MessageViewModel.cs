@@ -159,6 +159,13 @@ public sealed partial class MessageViewModel : ViewModel
             return;
         }
 
+        if(HasNotPremium && selectedMessages.Count > 1)
+        {
+            RunAction("open_premium");
+            return; 
+        }
+
+
         IsBusy = true;
 
         Task.Run(async () =>
@@ -192,6 +199,12 @@ public sealed partial class MessageViewModel : ViewModel
     {
         if (currentQueueOrTopic == null || !HasSelectedMessages)
         {
+            return;
+        }
+
+        if (HasNotPremium && selectedMessages.Count > 1)
+        {
+            RunAction("open_premium");
             return;
         }
 

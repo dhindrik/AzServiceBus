@@ -98,5 +98,15 @@
 
             <views:MessageDetailsView x:Name="MessageDetails" />
         </Grid>
+
+        <Grid x:Name="PremiumPopup" Padding="20" VerticalOptions="Center" HorizontalOptions="Center" BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}" Scale="0">
+
+             <VerticalStackLayout Spacing="20">
+                <Label Text="Premium required" FontSize="Title" />
+                <Label FontSize="Medium" Text="To perform more than on operation at time, Premium is required." />
+                <Button Text="Read more about Premium" Command="{Binding ShowPremiumCommand, Mode=OneTime}" />
+                 <Button Text="Dismiss" Command="{Binding DismissCommand, Mode=OneTime}" />
+            </VerticalStackLayout>
+        </Grid>
     </Grid>
 </mvvm:TinyView>

@@ -68,6 +68,12 @@ public sealed partial class ConnectViewModel : ViewModel
     [ObservableProperty]
     private string? connectionString;
 
+    [ObservableProperty]
+    private bool showSaveValidationMessage;
+
+    [ObservableProperty]
+    private bool showConnectValidationMessage;
+
     [RelayCommand]
     private void ToggleNew()
     {
@@ -92,12 +98,26 @@ public sealed partial class ConnectViewModel : ViewModel
                 return;
             }
 
-            if(string.IsNullOrWhiteSpace(name))
+            var error = false;
+
+            if (!ValidateSave())
             {
-                name = $"Connection-{DateTime.Now.ToString()}";
+                ShowSaveValidationMessage = true;
+                error = true;
             }
 
-            await connectionService.Save(new ConnectionInfo() { Name = name, Value = connectionString });
+            if (!ValidateConnect())
+            {
+                ShowConnectValidationMessage = true;
+                error = true;
+            }
+
+            if(error)
+            {
+                return;
+            }
+
+            await connectionService.Save(new ConnectionInfo() {Id = Guid.NewGuid().ToString(), Name = name, Value = connectionString });
         }
         catch (Exception ex)
         {
@@ -120,7 +140,14 @@ public sealed partial class ConnectViewModel : ViewModel
             return;
         }
 
+        if (!ValidateConnect())
+        {
+            ShowConnectValidationMessage = true;
+            return;
+        }
+
         await Navigation.NavigateTo($"///{nameof(MainViewModel)}", connectionString);
+
     }
 
     [RelayCommand]
@@ -130,9 +157,28 @@ public sealed partial class ConnectViewModel : ViewModel
         await OpenConnection();
     }
 
-    private bool Validate()
+    [RelayCommand]
+    private async Task Remove(ConnectionInfo info)
     {
-        return !string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(connectionString);
+        try
+        {
+            await connectionService.Remove(info);
+            Connections.Remove(info);
+        }
+        catch (Exception ex)
+        {
+            HandleException(ex);
+        }
+    }
+
+    private bool ValidateSave()
+    {
+        return !string.IsNullOrWhiteSpace(name);
+    }
+
+    private bool ValidateConnect()
+    {
+        return !string.IsNullOrWhiteSpace(connectionString);
     }
 
 }

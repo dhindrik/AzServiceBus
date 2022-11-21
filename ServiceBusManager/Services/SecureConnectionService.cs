@@ -29,7 +29,7 @@ public sealed class SecureConnectionService : IConnectionService
     {
         var connections = await Get();
 
-        var current = connections.Single(x => x.Value == connection.Value);
+        var current = connections.Single(x => x.Id == connection.Id);
 
         connections.Remove(current);
 

@@ -198,6 +198,19 @@ public sealed partial class MainViewModel : ViewModel
         ShowDeadLetters = false;
         ShowSubscriptions = true;
     }
+
+    [RelayCommand]
+    public async Task ShowPremium()
+    {
+        RunAction("close_premium");
+        await Navigation.NavigateTo("///Premium");
+    }
+
+    [RelayCommand]
+    public void Dismiss()
+    {
+        RunAction("close_premium");
+    }
 }
 
 
