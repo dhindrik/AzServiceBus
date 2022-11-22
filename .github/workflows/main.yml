@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.x'
+
+      - name: Install maui
+        run: dotnet workload install maui
+        
+      - name: Install code signing
+        uses: apple-actions/import-codesign-certs@v1
+        with: 
+          p12-file-base64: ${{ secrets.CERTIFICATE_CODE }}
+          p12-password: ${{ secrets.CERTIFICATES_PASSWORD }}
+          
+      - name: Install package signing
+        uses: apple-actions/import-codesign-certs@v1
+        with: 
+          p12-file-base64: ${{ secrets.CERTIFICATE_PACKAGE }}
+          p12-password: ${{ secrets.CERTIFICATES_PASSWORD }}
+      - name: Download Apple Provisioning Profiles
+        uses: Apple-Actions/download-provisioning-profiles@v1
+        with:
+          # The bundle identifier of the application
+          bundle-id: se.hindrikes.azservicebus
+          issuer-id: ${{ secrets.APPSTORE_API_ISSUER }}
+          # The Key ID for AppStore Connect API
+          api-key-id: {{ secrets.APPSTORE_API_KEY_ID }}
+          api-private-key: {{ secrets.APPSTORE_API_KEY }}
+      
+      - name: Install maui
+        run: dotnet build -c Release :/p:ApplicationVersion=$GITHUB_RUN_ID -o /package
+      
+      - name: Upload app to TestFlight
+        uses: Apple-Actions/upload-testflight-build@v1
+        with:
+          # The path to the app (ipa etc)
+          app-path: /package/AzServiceBus-1.0.pkg
+          app-type: osx
+          issuer-id: ${{ secrets.APPSTORE_API_ISSUER }}
+          # The Key ID for AppStore Connect API
+          api-key-id: {{ secrets.APPSTORE_API_KEY_ID }}
+          api-private-key: {{ secrets.APPSTORE_API_KEY }}
+          
+          
