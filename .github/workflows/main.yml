@@ -36,8 +36,8 @@ jobs:
           bundle-id: se.hindrikes.azservicebus
           issuer-id: ${{ secrets.APPSTORE_API_ISSUER }}
           # The Key ID for AppStore Connect API
-          api-key-id: {{ secrets.APPSTORE_API_KEY_ID }}
-          api-private-key: {{ secrets.APPSTORE_API_KEY }}
+          api-key-id: '{{ secrets.APPSTORE_API_KEY_ID }}'
+          api-private-key: '{{ secrets.APPSTORE_API_KEY }}'
       
       - name: Install maui
         run: dotnet build -c Release :/p:ApplicationVersion=$GITHUB_RUN_ID -o /package
@@ -50,7 +50,7 @@ jobs:
           app-type: osx
           issuer-id: ${{ secrets.APPSTORE_API_ISSUER }}
           # The Key ID for AppStore Connect API
-          api-key-id: {{ secrets.APPSTORE_API_KEY_ID }}
-          api-private-key: {{ secrets.APPSTORE_API_KEY }}
+          api-key-id: '{{ secrets.APPSTORE_API_KEY_ID }}'
+          api-private-key: '{{ secrets.APPSTORE_API_KEY }}'
           
           
