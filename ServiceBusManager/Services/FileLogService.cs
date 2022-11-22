@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks.Dataflow;
-
-namespace ServiceBusManager.Services;
+﻿namespace ServiceBusManager.Services;
 
 public class FileLogService : ILogService
 {
@@ -29,7 +26,7 @@ public class FileLogService : ILogService
 #if DEBUG
         var path = Path.Combine(FileSystem.AppDataDirectory, "AzServiceBus-DEBUG", "logs");
 #else
-        var path = Path.Combine(FileSystem.AppDataDirectory, "AzServiceBus", "logs");
+        var path = Path.Combine(FileSystem.AppDataDirectory, "logs");
 #endif
 
         Directory.CreateDirectory(path);

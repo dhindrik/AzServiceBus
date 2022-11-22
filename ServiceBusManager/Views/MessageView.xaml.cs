@@ -92,11 +92,6 @@ public partial class MessageView
         set => SetValue(DeadLetterSubscriptionNameProperty, value);
     }
 
-    protected override void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        base.OnPropertyChanged(propertyName);
-    }
-
     protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         base.OnPropertyChanged(propertyName);

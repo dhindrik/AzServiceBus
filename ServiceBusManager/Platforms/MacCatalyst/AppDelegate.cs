@@ -1,5 +1,4 @@
-﻿using System;
-using BackgroundTasks;
+﻿using BackgroundTasks;
 using Foundation;
 using Microsoft.Maui.Controls.Compatibility.Platform.iOS;
 using ServiceBusManager.Platforms.MacCatalyst;
@@ -39,7 +38,7 @@ public class AppDelegate : MauiUIApplicationDelegate
         {
             var service = Resolver.Resolve<ILogService>();
 
-            if(service != null)
+            if (service != null)
             {
                 service.LogException(ex);
             }
@@ -60,24 +59,20 @@ public class AppDelegate : MauiUIApplicationDelegate
 
         if (service.HasFeature(Constants.Features.Premium))
         {
-            var path = $"{FileSystem.AppDataDirectory}/bglog.txt";
 
-            BGTaskScheduler.Shared.Register("se.hindrikes.azservicebus.fetch", null, (task) =>
+            BGTaskScheduler.Shared.Register("se.hindrikes.azservicebus.fetch", null, async (task) =>
             {
                 var log = Resolver.Resolve<ILogService>();
 
                 if (log != null)
                 {
-                    log.LogEvent("BackgroundFetchStarting");
+                    await log.LogEvent("BackgroundFetchStarting");
                 }
-
-                File.AppendAllLines(path, new List<string>() { DateTime.Now.ToString() });
-
 
                 var dateTime = DateTimeOffset.UtcNow;
 
                 var service = Resolver.Resolve<IServiceBusService>();
-               
+
 
                 if (service == null)
                 {
@@ -87,14 +82,12 @@ public class AppDelegate : MauiUIApplicationDelegate
 
                 var compareDate = Preferences.Get("LastDeadLetter", dateTime.DateTime);
 
-                var countTask = service.CheckNewDeadLetters(new DateTimeOffset(compareDate));
-                countTask.RunSynchronously();
+                var count = await service.CheckNewDeadLetters(new DateTimeOffset(compareDate));
 
-                if (countTask.Result > 0)
+                if (count > 0)
                 {
-                    SendNotification(countTask.Result);
+                    SendNotification(count);
                 }
-
 
                 Preferences.Set("LastDeadLetter", dateTime.DateTime);
 
@@ -102,7 +95,7 @@ public class AppDelegate : MauiUIApplicationDelegate
 
                 if (log != null)
                 {
-                    log.LogEvent("BackgroundFetchCompleted");
+                    await log.LogEvent("BackgroundFetchCompleted");
                 }
 
 
@@ -136,9 +129,7 @@ public class AppDelegate : MauiUIApplicationDelegate
             }
         }
 
-        
-
-        if(log != null)
+        if (log != null)
         {
             log.LogEvent(nameof(ScheduleAppRefresh));
         }
@@ -169,7 +160,7 @@ public class AppDelegate : MauiUIApplicationDelegate
             return;
 
 #if MACCATALYST
-        // Version check
+
 
         var content = new UNMutableNotificationContent();
         content.Title = "New dead letters";

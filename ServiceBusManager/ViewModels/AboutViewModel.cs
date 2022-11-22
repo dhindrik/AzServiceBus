@@ -8,7 +8,7 @@ public sealed partial class AboutViewModel : ViewModel
 #if DEBUG
        LogPath = Path.Combine(FileSystem.AppDataDirectory, "AzServiceBus-DEBUG", "logs");
 #else
-       LogPath = Path.Combine(FileSystem.AppDataDirectory, "AzServiceBus", "logs");
+       LogPath = Path.Combine(FileSystem.AppDataDirectory, "logs");
 #endif
     }
 
