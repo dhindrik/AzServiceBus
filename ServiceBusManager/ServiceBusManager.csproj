@@ -82,4 +82,8 @@
 	<ItemGroup>
 	  <Folder Include="Helpers\" />
 	</ItemGroup>
+
+	<ItemGroup Condition="'$(Configuration)'=='Debug'">
+		<Compile Remove="SecretKeys.github.cs" />
+	</ItemGroup>
 </Project>
