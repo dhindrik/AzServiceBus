@@ -28,7 +28,6 @@ jobs:
         uses: Apple-Actions/download-provisioning-profiles@v1
         with:
           bundle-id: 'hindrikes.se.azservicebus'
-          profile-type: 'MAC_APP_STORE'
           issuer-id: ${{ secrets.APPSTORE_API_ISSUER }}
           api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
           api-private-key: ${{ secrets.APPSTORE_API_KEY }}
