@@ -35,7 +35,7 @@ jobs:
       - name: Restore packages
         run: dotnet restore
 
-      - name: Install maui
+      - name: Build mac app
         run: dotnet build ServiceBusManager/ServiceBusManager.csproj --no-restore -c Release -f net7.0-maccatalyst :/p:ApplicationVersion=$GITHUB_RUN_ID -o /package 
       
       - name: Upload app to TestFlight
