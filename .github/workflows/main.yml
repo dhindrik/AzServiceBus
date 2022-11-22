@@ -36,7 +36,7 @@ jobs:
         run: dotnet restore
 
       - name: Build mac app
-        run: dotnet build ServiceBusManager/ServiceBusManager.csproj --no-restore -c Release -f net7.0-maccatalyst :/p:ApplicationVersion=$GITHUB_RUN_ID -o /package 
+        run: dotnet build 'ServiceBusManager/ServiceBusManager.csproj' --no-restore -c Release -f net7.0-maccatalyst :/p:ApplicationVersion=${{ env.RUN_ID }} -o '/package' 
       
       - name: Upload app to TestFlight
         uses: Apple-Actions/upload-testflight-build@v1
