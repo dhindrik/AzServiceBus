@@ -32,8 +32,11 @@ jobs:
           api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
           api-private-key: ${{ secrets.APPSTORE_API_KEY }}
       
+      - name: Restore packages
+        run: dotnet restore
+
       - name: Install maui
-        run: dotnet build -c Release :/p:ApplicationVersion=$GITHUB_RUN_ID -o /package
+        run: dotnet build ServiceBusManager/ServiceManager.csproj --no-restore -c Release :/p:ApplicationVersion=$GITHUB_RUN_ID -o /package 
       
       - name: Upload app to TestFlight
         uses: Apple-Actions/upload-testflight-build@v1
