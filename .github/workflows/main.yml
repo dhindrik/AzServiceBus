@@ -27,7 +27,7 @@ jobs:
       - name: Download Apple Provisioning Profiles
         uses: Apple-Actions/download-provisioning-profiles@v1
         with:
-          bundle-id: 'se.hindrikes.azservicebus'
+          bundle-id: 'hindrikes.se.azservicebus'
           profile-type: 'MAC_APP_STORE'
           issuer-id: ${{ secrets.APPSTORE_API_ISSUER }}
           api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
