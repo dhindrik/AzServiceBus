@@ -21,14 +21,7 @@ jobs:
       - name: Install code signing
         uses: apple-actions/import-codesign-certs@v1
         with: 
-          p12-file-base64: ${{ secrets.CERTIFICATE_CODE }}
-          p12-password: ${{ secrets.CERTIFICATES_PASSWORD }}
-          
-      - name: Install package signing
-        uses: apple-actions/import-codesign-certs@v1
-        with:
-          create-keychain : false
-          p12-file-base64: ${{ secrets.CERTIFICATE_PACKAGE }}
+          p12-file-base64: ${{ secrets.CERTIFICATE_MAC }}
           p12-password: ${{ secrets.CERTIFICATES_PASSWORD }}
       
       - name: Download Apple Provisioning Profiles
