@@ -116,8 +116,10 @@ public class AppDelegate : MauiUIApplicationDelegate
 
     private void ScheduleAppRefresh()
     {
-        var request = new BGAppRefreshTaskRequest("se.hindrikes.azservicebus.fetch");
+        var request = new BGProcessingTaskRequest("se.hindrikes.azservicebus.fetch");
         request.EarliestBeginDate = DateTime.Now.AddSeconds(30).ToNSDate();
+        request.RequiresNetworkConnectivity = true;
+        request.RequiresExternalPower = false;
 
         BGTaskScheduler.Shared.Submit(request, out var err);
         var log = Resolver.Resolve<ILogService>();
