@@ -6,9 +6,9 @@ namespace ServiceBusManager.ViewModels;
 public sealed partial class ConnectViewModel : ViewModel
 {
     private readonly IConnectionService connectionService;
-    private readonly IFeatureService featureService;
+    private readonly IPremiumService featureService;
 
-    public ConnectViewModel(IConnectionService connectionService, IFeatureService featureService, ILogService logService) : base(logService)
+    public ConnectViewModel(IConnectionService connectionService, IPremiumService featureService, ILogService logService) : base(logService)
     {
         this.connectionService = connectionService;
         this.featureService = featureService;
@@ -94,7 +94,7 @@ public sealed partial class ConnectViewModel : ViewModel
         {
             if (connectionString == SecretKeys.PremiumKey)
             {
-                featureService.AddFeature(Constants.Features.Premium);
+                featureService.AddPremium();
                 return;
             }
 

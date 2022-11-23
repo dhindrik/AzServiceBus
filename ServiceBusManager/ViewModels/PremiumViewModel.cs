@@ -6,9 +6,9 @@ namespace ServiceBusManager.ViewModels;
 
 public sealed partial class PremiumViewModel : ViewModel
 {
-    public PremiumViewModel(IFeatureService featureService, ILogService logService) : base(logService)
+    public PremiumViewModel(IPremiumService featureService, ILogService logService) : base(logService)
     {
-        this.featureService = featureService;
+        this.premiumService = featureService;
     }
 
     public override async Task Initialize()
@@ -45,6 +45,11 @@ public sealed partial class PremiumViewModel : ViewModel
         IsBusy = false;
     }
 
+    private async Task Load()
+    {
+
+    }
+
     [ObservableProperty]
     private string? lifePrice;
 
@@ -53,7 +58,7 @@ public sealed partial class PremiumViewModel : ViewModel
 
     [ObservableProperty]
     private string? monthPrice;
-    private readonly IFeatureService featureService;
+    private readonly IPremiumService premiumService;
 
     [RelayCommand]
     private async Task BuyLifetime()
@@ -69,7 +74,7 @@ public sealed partial class PremiumViewModel : ViewModel
 
             if (result != null && result.State == PurchaseState.Purchased)
             {
-                featureService.AddFeature(Constants.Features.Premium);
+                premiumService.AddPremium();
 
                 await Finalize(result.TransactionIdentifier);
             }
@@ -96,7 +101,7 @@ public sealed partial class PremiumViewModel : ViewModel
 
             if (result != null && result.State == PurchaseState.Purchased)
             {
-                featureService.AddFeature(Constants.Features.Premium, DateTime.Now.AddMonths(1));
+                premiumService.AddPremium(DateTime.Now.AddMonths(1));
 
                 await Finalize(result.TransactionIdentifier);
             }
@@ -123,7 +128,7 @@ public sealed partial class PremiumViewModel : ViewModel
 
             if (result != null && result.State == PurchaseState.Purchased)
             {
-                featureService.AddFeature(Constants.Features.Premium, DateTime.Now.AddYears(1));
+                premiumService.AddPremium(DateTime.Now.AddYears(1));
 
                 await Finalize(result.TransactionIdentifier);
             }
@@ -159,12 +164,12 @@ public sealed partial class PremiumViewModel : ViewModel
             {
                 if(purchase.ProductId == Constants.Products.Monthly && purchase.TransactionDateUtc < DateTime.UtcNow.AddMonths(1))
                 {
-                    featureService.AddFeature(Constants.Features.Premium, purchase.TransactionDateUtc.AddMonths(1));
+                    premiumService.AddPremium(purchase.TransactionDateUtc.AddMonths(1));
                     return true;
                 }
                 else if (purchase.ProductId == Constants.Products.Yearly && purchase.TransactionDateUtc < DateTime.UtcNow.AddYears(1))
                 {
-                    featureService.AddFeature(Constants.Features.Premium, purchase.TransactionDateUtc.AddYears(1));
+                    premiumService.AddPremium(purchase.TransactionDateUtc.AddYears(1));
                     return true;
                 }
 
@@ -179,7 +184,7 @@ public sealed partial class PremiumViewModel : ViewModel
 
             if (purchase != null && purchase.ProductId == Constants.Products.Lifetime)
             {
-                featureService.AddFeature(Constants.Features.Premium);
+                premiumService.AddPremium();
                 return true;
             }
         }

@@ -23,7 +23,7 @@
                         <Label Text="App version" FontSize="Medium" />
                         <Label HorizontalOptions="End" Text="{Binding AppVersion}" />
                     </Grid>
-                     <Label Text="Path to log files:" FontSize="Medium" FontAttributes="Bold" />
+                    <Label Text="Path to log files:" FontSize="Medium" FontAttributes="Bold" />
                     <Grid ColumnDefinitions="*,Auto">
                         <Label Text="{Binding LogPath}" VerticalOptions="Center" />
                         <Image Grid.Column="1" VerticalOptions="Center">
@@ -38,9 +38,7 @@
 
                             </Image.GestureRecognizers>
                         </Image>
-                        </Grid>
-
-     
+                    </Grid>
                 </VerticalStackLayout>
                 <HorizontalStackLayout Spacing="20" VerticalOptions="End" HorizontalOptions="End">
                     <Button Text="Privacy Policy" Command="{Binding PrivacyCommand}" />

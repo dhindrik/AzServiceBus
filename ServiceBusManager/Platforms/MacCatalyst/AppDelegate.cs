@@ -1,4 +1,6 @@
-﻿using BackgroundTasks;
+﻿using System.Threading.Tasks;
+using AVFoundation;
+using BackgroundTasks;
 using Foundation;
 using Microsoft.Maui.Controls.Compatibility.Platform.iOS;
 using ServiceBusManager.Platforms.MacCatalyst;
@@ -10,33 +12,37 @@ namespace ServiceBusManager;
 [Register("AppDelegate")]
 public class AppDelegate : MauiUIApplicationDelegate
 {
+    private const string BgProcessingIdentifier = "se.hindrikes.azservicebus.fetch";
+
     protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
 
     public override bool FinishedLaunching(UIKit.UIApplication application, NSDictionary launchOptions)
     {
         base.FinishedLaunching(application, launchOptions);
-
+        var service = Resolver.Resolve<ILogService>();
         try
         {
             UNUserNotificationCenter.Current.Delegate = new UserNotificationCenterDelegate();
 
-            // Check we're at least v10.14
-            if (NSProcessInfo.ProcessInfo.IsOperatingSystemAtLeastVersion(new NSOperatingSystemVersion(10, 14, 0)))
-            {
-                // Request notification permissions from the user
-                UNUserNotificationCenter.Current.RequestAuthorization(UNAuthorizationOptions.Alert |
-                    UNAuthorizationOptions.Badge |
-                    UNAuthorizationOptions.Sound, (approved, err) =>
+            // Request notification permissions from the user
+            UNUserNotificationCenter.Current.RequestAuthorization(UNAuthorizationOptions.Alert |
+                UNAuthorizationOptions.Badge |
+                UNAuthorizationOptions.Sound, async (approved, err) =>
+                {
+                    if (service != null)
                     {
+                        if (err != null)
+                        {
+                            await service!.LogException(new Exception(err.ToString()));
+                        }
+                    }
+                });
 
-                    });
-            }
-
-            CheckFeature();
+            //CheckPremium();
         }
         catch (Exception ex)
         {
-            var service = Resolver.Resolve<ILogService>();
+
 
             if (service != null)
             {
@@ -44,23 +50,94 @@ public class AppDelegate : MauiUIApplicationDelegate
             }
         }
 
+        _ = Task.Run(async () =>
+        {
+            var premiumService = Resolver.Resolve<IPremiumService>();
+
+            while (true)
+            {
+#if DEBUG
+                await Task.Delay(10000);
+#else
+                await Task.Delay(300000);
+#endif
+
+                if (premiumService!.HasPremium())
+                {
+                    await service!.LogEvent("StartingAsyncTask");
+
+                    await CheckForDeadLetters();
+                }
+            }
+        });
+
         return true;
     }
 
-
-    private bool CheckFeature()
+    public override void DidEnterBackground(UIApplication application)
     {
-        var service = Resolver.Resolve<IFeatureService>();
+        base.DidEnterBackground(application);
+
+        var service = Resolver.Resolve<ILogService>();
+
+        if (service != null)
+        {
+            service.LogEvent(nameof(DidEnterBackground));
+        }
+    }
+
+    private async static Task<bool> CheckForDeadLetters()
+    {
+        var log = Resolver.Resolve<ILogService>();
+
+        try
+        {
+            var dateTime = DateTimeOffset.UtcNow;
+
+            var service = Resolver.Resolve<IServiceBusService>();
+
+            if (service == null)
+            {
+                return false;
+            }
+
+            var compareDate = Preferences.Get("LastDeadLetter", dateTime.DateTime);
+
+            var count = await service.CheckNewDeadLetters(new DateTimeOffset(compareDate));
+
+            Preferences.Set("LastDeadLetter", dateTime.DateTime);
+
+            if (count > 0)
+            {
+                SendNotification(count);
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            if (log != null)
+            {
+                await log.LogException(ex);
+            }
+        }
+
+        return false;
+    }
+
+    private bool CheckPremium()
+    {
+        var service = Resolver.Resolve<IPremiumService>();
 
         if (service == null)
         {
             throw new ArgumentNullException("Add IFeatureService to IoC");
         }
 
-        if (service.HasFeature(Constants.Features.Premium))
+        if (service.HasPremium())
         {
 
-            BGTaskScheduler.Shared.Register("se.hindrikes.azservicebus.fetch", null, async (task) =>
+            var result = BGTaskScheduler.Shared.Register(BgProcessingIdentifier, null, async (task) =>
             {
                 var log = Resolver.Resolve<ILogService>();
 
@@ -69,29 +146,9 @@ public class AppDelegate : MauiUIApplicationDelegate
                     await log.LogEvent("BackgroundFetchStarting");
                 }
 
-                var dateTime = DateTimeOffset.UtcNow;
+                var result = await CheckForDeadLetters();
 
-                var service = Resolver.Resolve<IServiceBusService>();
-
-
-                if (service == null)
-                {
-                    task.SetTaskCompleted(false);
-                    return;
-                }
-
-                var compareDate = Preferences.Get("LastDeadLetter", dateTime.DateTime);
-
-                var count = await service.CheckNewDeadLetters(new DateTimeOffset(compareDate));
-
-                if (count > 0)
-                {
-                    SendNotification(count);
-                }
-
-                Preferences.Set("LastDeadLetter", dateTime.DateTime);
-
-                task.SetTaskCompleted(true);
+                task.SetTaskCompleted(result);
 
                 if (log != null)
                 {
@@ -99,25 +156,24 @@ public class AppDelegate : MauiUIApplicationDelegate
                 }
 
 
-                ScheduleAppRefresh();
+                ScheduleBackgroundCheck();
             });
 
-            ScheduleAppRefresh();
+            ScheduleBackgroundCheck();
 
             return true;
         }
         else
         {
-            service.FeatureChanged += Service_FeatureChanged;
+            service.PremiumChanged += Service_FeatureChanged;
         }
 
         return false;
     }
-
-    private void ScheduleAppRefresh()
+    //e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"se.hindrikes.azservicebus.fetch"]
+    private void ScheduleBackgroundCheck()
     {
-        var request = new BGProcessingTaskRequest("se.hindrikes.azservicebus.fetch");
-        request.EarliestBeginDate = DateTime.Now.AddSeconds(30).ToNSDate();
+        var request = new BGProcessingTaskRequest(BgProcessingIdentifier);
         request.RequiresNetworkConnectivity = true;
         request.RequiresExternalPower = false;
 
@@ -133,28 +189,28 @@ public class AppDelegate : MauiUIApplicationDelegate
 
         if (log != null)
         {
-            log.LogEvent(nameof(ScheduleAppRefresh));
+            log.LogEvent(nameof(ScheduleBackgroundCheck));
         }
     }
 
     private void Service_FeatureChanged(object? sender, EventArgs e)
     {
-        var service = Resolver.Resolve<IFeatureService>();
+        var service = Resolver.Resolve<IPremiumService>();
 
-        if (CheckFeature())
+        if (CheckPremium())
         {
             if (service == null)
             {
                 throw new ArgumentNullException("Add IFeatureService to IoC");
             }
 
-            service.FeatureChanged -= Service_FeatureChanged;
+            service.PremiumChanged -= Service_FeatureChanged;
         }
     }
 
 
 
-    private void SendNotification(int badgeNumber)
+    private static void SendNotification(int badgeNumber)
     {
         var shouldSend = Preferences.Default.Get<bool>("Notifications", false);
 
@@ -180,7 +236,8 @@ public class AppDelegate : MauiUIApplicationDelegate
         {
             if (err != null)
             {
-                // Do something with error...
+                var log = Resolver.Resolve<ILogService>();
+                log!.LogException(new Exception(err.ToString()));
             }
         });
 #endif

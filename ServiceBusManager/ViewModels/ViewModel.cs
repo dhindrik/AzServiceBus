@@ -6,7 +6,7 @@ namespace ServiceBusManager.ViewModels;
 public partial class ViewModel : TinyViewModel
 {
     private readonly ILogService logService;
-    private IFeatureService? featureService;
+    private IPremiumService? premiumService;
 
     private static Dictionary<string, Action> Actions { get; } = new Dictionary<string, Action>();
     private static Dictionary<string, Action<object>> ParameterActions { get; } = new Dictionary<string, Action<object>>();
@@ -23,15 +23,15 @@ public partial class ViewModel : TinyViewModel
     {
         await base.Initialize();
 
-        var service = Resolver.Resolve<IFeatureService>();
+        var service = Resolver.Resolve<IPremiumService>();
         if (service == null)
         {
             throw new NullReferenceException("IFeatureService need to be added to IoC container");
         }
 
-        featureService = service;
+        premiumService = service;
 
-        service.FeatureChanged += (sender, args) => CheckPremium();
+        service.PremiumChanged += (sender, args) => CheckPremium();
 
         if (!hasPremium.HasValue)
         {
@@ -43,7 +43,7 @@ public partial class ViewModel : TinyViewModel
     {
         _ = Task.Run(() =>
         {
-            hasPremium = featureService?.HasFeature(Constants.Features.Premium);
+            hasPremium = premiumService?.HasPremium();
 
             MainThread.BeginInvokeOnMainThread(() => {
                 OnPropertyChanged(nameof(HasPremium));

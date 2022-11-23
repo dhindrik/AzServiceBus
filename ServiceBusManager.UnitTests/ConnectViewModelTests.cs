@@ -7,7 +7,7 @@ public class ConnectViewModelTests
     {
         //Arrange
         var connectionService = Substitute.For<IConnectionService>();
-        var featureService = Substitute.For<IFeatureService>();
+        var featureService = Substitute.For<IPremiumService>();
         var logService = Substitute.For<ILogService>();
 
         var viewModel = new ConnectViewModel(connectionService, featureService, logService);
@@ -26,7 +26,7 @@ public class ConnectViewModelTests
     {
         //Arrange
         var connectionService = Substitute.For<IConnectionService>();
-        var featureService = Substitute.For<IFeatureService>();
+        var featureService = Substitute.For<IPremiumService>();
         var logService = Substitute.For<ILogService>();
 
         var viewModel = new ConnectViewModel(connectionService, featureService, logService);
@@ -51,7 +51,7 @@ public class ConnectViewModelTests
             new Models.ConnectionInfo()
         }));
 
-        var featureService = Substitute.For<IFeatureService>();
+        var featureService = Substitute.For<IPremiumService>();
         var logService = Substitute.For<ILogService>();
 
         var viewModel = new ConnectViewModel(connectionService, featureService, logService);
@@ -71,7 +71,7 @@ public class ConnectViewModelTests
         var connectionService = Substitute.For<IConnectionService>();
         connectionService.Get().Returns(Task.FromResult(new List<Models.ConnectionInfo>()));
 
-        var featureService = Substitute.For<IFeatureService>();
+        var featureService = Substitute.For<IPremiumService>();
         var logService = Substitute.For<ILogService>();
 
         var viewModel = new ConnectViewModel(connectionService, featureService, logService);
@@ -91,7 +91,7 @@ public class ConnectViewModelTests
         //Arrange
         var connectionService = Substitute.For<IConnectionService>();
 
-        var featureService = Substitute.For<IFeatureService>();
+        var featureService = Substitute.For<IPremiumService>();
         var logService = Substitute.For<ILogService>();
 
         TinyNavigation.Current = Substitute.For<TinyMvvm.INavigation>();
@@ -115,7 +115,7 @@ public class ConnectViewModelTests
         //Arrange
         var connectionService = Substitute.For<IConnectionService>();
 
-        var featureService = Substitute.For<IFeatureService>();
+        var featureService = Substitute.For<IPremiumService>();
         var logService = Substitute.For<ILogService>();
 
         TinyNavigation.Current = Substitute.For<TinyMvvm.INavigation>();
@@ -144,7 +144,7 @@ public class ConnectViewModelTests
         //Arrange
         var connectionService = Substitute.For<IConnectionService>();
 
-        var featureService = Substitute.For<IFeatureService>();
+        var featureService = Substitute.For<IPremiumService>();
         var logService = Substitute.For<ILogService>();
 
         TinyNavigation.Current = Substitute.For<TinyMvvm.INavigation>();
@@ -172,7 +172,7 @@ public class ConnectViewModelTests
         //Arrange
         var connectionService = Substitute.For<IConnectionService>();
 
-        var featureService = Substitute.For<IFeatureService>();
+        var featureService = Substitute.For<IPremiumService>();
         var logService = Substitute.For<ILogService>();
 
         var viewModel = new ConnectViewModel(connectionService, featureService, logService);
@@ -193,7 +193,7 @@ public class ConnectViewModelTests
         //Arrange
         var connectionService = Substitute.For<IConnectionService>();
 
-        var featureService = Substitute.For<IFeatureService>();
+        var featureService = Substitute.For<IPremiumService>();
         var logService = Substitute.For<ILogService>();
 
         var viewModel = new ConnectViewModel(connectionService, featureService, logService);
@@ -214,7 +214,7 @@ public class ConnectViewModelTests
         //Arrange
         var connectionService = Substitute.For<IConnectionService>();
 
-        var featureService = Substitute.For<IFeatureService>();
+        var featureService = Substitute.For<IPremiumService>();
         var logService = Substitute.For<ILogService>();
 
 

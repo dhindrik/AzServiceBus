@@ -36,7 +36,7 @@
 
             <HorizontalStackLayout Spacing="20" IsVisible="{Binding IsInitialized}">
                 <Switch IsToggled="{Binding GetNotifications}" OnColor="{StaticResource Primary}" />
-                <Label VerticalOptions="Center" FontSize="Medium" Text="Get notifications for dead letters" />
+                <Label VerticalOptions="Center" FontSize="Medium" Text="Get notifications for dead letters (app needs to be running)" />
                 <Label IsVisible="{Binding NotificationsNotAllowed}" Text="(Notifications are disabled in System Settings -> Notifications)" TextColor="Red" FontSize="Medium" VerticalOptions="Center" />
             </HorizontalStackLayout>
 

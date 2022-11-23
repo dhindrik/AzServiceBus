@@ -27,7 +27,7 @@
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>process</string>
+		<string>processing</string>
 	</array>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.developer-tools</string>
@@ -36,10 +36,10 @@
 	<key>CFBundleDisplayName</key>
 	<string>AzServiceBus</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
-<array>
-    <string>se.hindrikes.azservicebus.fetch</string>
-</array>
-<key>ITSAppUsesNonExemptEncryption</key>
+	<array>
+		<string>se.hindrikes.azservicebus.fetch</string>
+	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>
 </plist>
