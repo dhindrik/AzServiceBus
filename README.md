@@ -14,12 +14,14 @@ AzServiceBus is a service bus explorer for Azure Service Bus.
 
 No data will be sent to the app developer or third parties.
 
-## Support the development
-Do you want to support the development of this app? Download it from Mac App Store and buy a premium subscriptions.
-
 ## Platforms
 * Mac (in review)
 * Windows (coming)
 * iOS/iPad (coming)
 * Android (coming)
+
+## Support the development
+Do you want to support the development of this app? Download it from Mac App Store and buy a premium subscriptions.
+
+
 
