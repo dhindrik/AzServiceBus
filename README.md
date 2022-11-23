@@ -14,6 +14,9 @@ AzServiceBus is a service bus explorer for Azure Service Bus.
 
 No data will be sent to the app developer or third parties.
 
+## Feedback
+If you have found a bug or have an idea about the app can be better, please create an [issue](https://github.com/dhindrik/AzServiceBus/issues).
+
 ## Platforms
 * Mac (in review)
 * Windows (coming)
