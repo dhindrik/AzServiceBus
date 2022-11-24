@@ -20,7 +20,7 @@ If you have found a bug or have an idea about the app can be better, please crea
 ## Platforms
 * Mac (in review)
 * Windows (coming)
-* iOS/iPad (coming)
+* iOS/iPadOS (coming)
 * Android (coming)
 
 ## Support the development
