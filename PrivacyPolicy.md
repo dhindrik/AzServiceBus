@@ -1,4 +1,4 @@
-Anonymousy usage data is sent to Microsoft App Center. It is only used to improve the app.
+No data is sent to the developer or third parties.
 
 If you saved connections strings, they are saved in secure storage on your device (keychain on Mac).
 
