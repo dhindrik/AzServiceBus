@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 	<PropertyGroup>
-		<TargetFrameworks>net7.0-maccatalyst;net7.0;</TargetFrameworks>
+		<TargetFrameworks>net7.0-maccatalyst;net7.0-ios;net7.0;</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!--	<TargetFrameworks>$(TargetFrameworks);net6.0-tizen</TargetFrameworks> -->
 		<OutputType Condition="'$(TargetFramework)' == 'net7.0-maccatalyst'">Exe</OutputType>
+		<OutputType Condition="'$(TargetFramework)' == 'net7.0-ios'">Exe</OutputType>
 		<OutputType Condition="'$(TargetFramework)' == 'net7.0'">Library</OutputType>
 		<RootNamespace>ServiceBusManager</RootNamespace>
 		<AssemblyName Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">AzServiceBus</AssemblyName>
@@ -19,8 +20,8 @@
 		<ApplicationTitle Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">AzServiceBus</ApplicationTitle>
 		<ApplicationTitle Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">AzServiceBus Debug</ApplicationTitle>
 		<!-- App Identifier -->
-		<ApplicationId Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">hindrikes.se.azservicebus.debug</ApplicationId>
-		<ApplicationId Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">hindrikes.se.azservicebus</ApplicationId>
+		<ApplicationId Condition="'$(Configuration)'=='Debug'">hindrikes.se.azservicebus.debug</ApplicationId>
+		<ApplicationId Condition="'$(Configuration)'=='Release'">hindrikes.se.azservicebus</ApplicationId>
 		<ApplicationIdGuid>43681C5C-733E-4899-B69F-32C627F37BA2</ApplicationIdGuid>
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -31,10 +32,7 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
-
-		
 	</PropertyGroup>
-	
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">
 		<CreatePackage>true</CreatePackage>
 		<CodesignKey>Apple Distribution: Daniel Hindrikes (Q5EHXWCN5X)</CodesignKey>
@@ -44,14 +42,22 @@
 		<CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>
 		<EnablePackageSigning>true</EnablePackageSigning>
 		<_LibMonoLinkMode>Static</_LibMonoLinkMode>
-<_LibXamarinLinkMode>Static</_LibXamarinLinkMode>
+		<_LibXamarinLinkMode>Static</_LibXamarinLinkMode>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
-		<EnableCodeSigning>False</EnableCodeSigning>
-		<CodesignKey>Apple Development: Created via API (C65YK5VCL5)</CodesignKey>
-		<CodesignProvision>AzServiceBusDebug</CodesignProvision>
+		<CodesignKey>Mac Developer</CodesignKey>
+		<CodesignProvision></CodesignProvision>
 		<!--<CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>-->
 		<CreatePackage>False</CreatePackage>
+		<PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
+	  <CreatePackage>false</CreatePackage>
+	  <CodesignProvision>Automatic</CodesignProvision>
+	  <CodesignKey>iPhone Developer</CodesignKey>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
+	  <CreatePackage>false</CreatePackage>
 	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
@@ -69,21 +75,19 @@
 		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.11.1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
 		<PackageReference Include="Plugin.InAppBilling" Version="6.7.0" />
-	<!--	<PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.0-preview.1" />
+		<!--	<PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.0-preview.1" />
 		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.0-preview.1" />-->
 		<PackageReference Include="CommunityToolkit.Maui" Version="3.0.0" />
 	</ItemGroup>
-	
 	<ItemGroup>
-	  <None Remove="Plugin.LocalNotification" />
-	  <None Remove="Helpers\" />
-	  <None Remove="CommunityToolkit.Maui" />
+		<None Remove="Plugin.LocalNotification" />
+		<None Remove="Helpers\" />
+		<None Remove="CommunityToolkit.Maui" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Helpers\" />
+		<Folder Include="Helpers\" />
 	</ItemGroup>
-
-	<ItemGroup Condition="'$(Configuration)'=='Release'">
+	<ItemGroup Condition="'$(Configuration)'=='Debug'">
 		<Compile Remove="SecretKeys.github.cs" />
 	</ItemGroup>
 </Project>

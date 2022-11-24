@@ -16,11 +16,13 @@
                 <Frame Padding="10"
                                 BorderColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}"
                                BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}">
-                    <Grid ColumnDefinitions="*,Auto,Auto, Auto" ColumnSpacing="10" Margin="0,10">
-                        <Label Text="{Binding Name}" FontSize="Medium" VerticalOptions="Center" />
-                        <Button Grid.Column="1" Text="Info" HeightRequest="30" VerticalOptions="Center" Command="{Binding Source={x:Reference QueuesAndTopics}, Path=BindingContext.OpenInfoCommand, Mode=OneTime}" CommandParameter="{Binding Name, Mode=OneTime}" />
-                        <Button Grid.Column="2" Text="Peek" HeightRequest="30" VerticalOptions="Center" Command="{Binding Source={x:Reference QueuesAndTopics}, Path=BindingContext.OpenPeekCommand, Mode=OneTime}" CommandParameter="{Binding Name, Mode=OneTime}" />
-                        <Button Grid.Column="3" Text="Dead Letters" HeightRequest="30" VerticalOptions="Center" Command="{Binding Source={x:Reference QueuesAndTopics}, Path=BindingContext.OpenDeadLettersCommand, Mode=OneTime}" CommandParameter="{Binding Name, Mode=OneTime}" />
+                    <Grid RowDefinitions="Auto,*" ColumnSpacing="10" Margin="0,10" RowSpacing="10">
+                        <Label Text="{Binding Name}" Grid.ColumnSpan="3" FontSize="Medium" VerticalOptions="Center" />
+                        <HorizontalStackLayout Grid.Row="1" Spacing="10">
+                            <Button Text="Info" HeightRequest="30" VerticalOptions="Center" Command="{Binding Source={x:Reference QueuesAndTopics}, Path=BindingContext.OpenInfoCommand, Mode=OneTime}" CommandParameter="{Binding Name, Mode=OneTime}" />
+                            <Button Text="Peek" HeightRequest="30" VerticalOptions="Center" HorizontalOptions="Center" Command="{Binding Source={x:Reference QueuesAndTopics}, Path=BindingContext.OpenPeekCommand, Mode=OneTime}" CommandParameter="{Binding Name, Mode=OneTime}" />
+                            <Button Text="Dead Letters" HeightRequest="30" VerticalOptions="Center" Command="{Binding Source={x:Reference QueuesAndTopics}, Path=BindingContext.OpenDeadLettersCommand, Mode=OneTime}" CommandParameter="{Binding Name, Mode=OneTime}" />
+                        </HorizontalStackLayout>
                     </Grid>
                 </Frame>
             </ContentView>
@@ -30,10 +32,12 @@
                 <Frame Padding="10"
                                 BorderColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}"
                                BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}">
-                    <Grid ColumnDefinitions="*, Auto, Auto" ColumnSpacing="10" Margin="0,10">
+                    <Grid RowDefinitions="Auto,*" RowSpacing="10" ColumnSpacing="10" Margin="0,10">
                         <Label Text="{Binding Name}" FontSize="Medium" VerticalOptions="Center" />
-                        <Button Grid.Column="1" Text="Info" HeightRequest="30" VerticalOptions="Center" Command="{Binding Source={x:Reference QueuesAndTopics}, Path=BindingContext.OpenTopicInfoCommand, Mode=OneTime}" CommandParameter="{Binding Name, Mode=OneTime}" />
-                        <Button Grid.Column="2" Text="Subscriptions" HeightRequest="30" VerticalOptions="Center" Command="{Binding Source={x:Reference QueuesAndTopics}, Path=BindingContext.OpenSubscriptionsCommand, Mode=OneTime}" CommandParameter="{Binding Name, Mode=OneTime}" />
+                        <HorizontalStackLayout Grid.Row="1" Spacing="10">
+                            <Button Text="Info" HeightRequest="30" VerticalOptions="Center" Command="{Binding Source={x:Reference QueuesAndTopics}, Path=BindingContext.OpenTopicInfoCommand, Mode=OneTime}" CommandParameter="{Binding Name, Mode=OneTime}" />
+                            <Button Text="Subscriptions" HeightRequest="30" VerticalOptions="Center" Command="{Binding Source={x:Reference QueuesAndTopics}, Path=BindingContext.OpenSubscriptionsCommand, Mode=OneTime}" CommandParameter="{Binding Name, Mode=OneTime}" />
+                        </HorizontalStackLayout>
                     </Grid>
                 </Frame>
             </ContentView>
@@ -46,7 +50,7 @@
     </ContentPage.Resources>
 
     <Grid>
-        <Grid ColumnDefinitions="*,1, 2*" RowDefinitions="Auto, 1,*" IsVisible="{Binding IsNotBusy}">
+        <Grid ColumnDefinitions="320,1, 2*" RowDefinitions="Auto, 1,*" IsVisible="{Binding IsNotBusy}">
             <HorizontalStackLayout Grid.ColumnSpan="3">
                 <Button Margin="0,20"
                         HeightRequest="50"
@@ -101,11 +105,11 @@
 
         <Grid x:Name="PremiumPopup" Padding="20" VerticalOptions="Center" HorizontalOptions="Center" BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}" Scale="0">
 
-             <VerticalStackLayout Spacing="20">
+            <VerticalStackLayout Spacing="20">
                 <Label Text="Premium required" FontSize="Title" />
                 <Label FontSize="Medium" Text="To perform more than on operation at time, Premium is required." />
                 <Button Text="Read more about Premium" Command="{Binding ShowPremiumCommand, Mode=OneTime}" />
-                 <Button Text="Dismiss" Command="{Binding DismissCommand, Mode=OneTime}" />
+                <Button Text="Dismiss" Command="{Binding DismissCommand, Mode=OneTime}" />
             </VerticalStackLayout>
         </Grid>
     </Grid>
