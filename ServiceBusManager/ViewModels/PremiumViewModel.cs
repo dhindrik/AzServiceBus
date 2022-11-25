@@ -22,7 +22,7 @@ public sealed partial class PremiumViewModel : ViewModel
             {
                 var hasPremium = await RestorePurchase();
 
-                if(!hasPremium)
+                if (!hasPremium)
                 {
                     await CrossInAppBilling.Current.ConnectAsync();
 
@@ -46,11 +46,6 @@ public sealed partial class PremiumViewModel : ViewModel
         }
 
         IsBusy = false;
-    }
-
-    private async Task Load()
-    {
-
     }
 
     [ObservableProperty]
@@ -150,7 +145,11 @@ public sealed partial class PremiumViewModel : ViewModel
         IsBusy = false;
     }
 
-
+    [RelayCommand]
+    private async Task OpenLicense()
+    {
+        await Browser.OpenAsync("https://www.apple.com/legal/internet-services/itunes/dev/stdeula/");
+    }
 
     private async Task<bool> RestorePurchase()
     {
@@ -165,13 +164,11 @@ public sealed partial class PremiumViewModel : ViewModel
 
         if (purchases.Any())
         {
-
-
             var purchase = purchases.OrderByDescending(x => x.TransactionDateUtc).FirstOrDefault();
 
             if (purchase != null)
             {
-                if(purchase.ProductId == Constants.Products.Monthly && purchase.TransactionDateUtc < DateTime.UtcNow.AddMonths(1))
+                if (purchase.ProductId == Constants.Products.Monthly && purchase.TransactionDateUtc < DateTime.UtcNow.AddMonths(1))
                 {
                     premiumService.AddPremium(purchase.TransactionDateUtc.AddMonths(1));
                     return true;
@@ -198,8 +195,7 @@ public sealed partial class PremiumViewModel : ViewModel
             }
         }
 
-            return false;
-
+        return false;
     }
 
     private async Task Finalize(string identifier)
@@ -216,4 +212,3 @@ public sealed partial class PremiumViewModel : ViewModel
         }
     }
 }
-

@@ -40,6 +40,11 @@ public sealed partial class AboutViewModel : ViewModel
 
         await toast.Show();
     }
-        
+
+    [RelayCommand]
+    private async Task OpenLicense()
+    {
+        await Browser.OpenAsync("https://www.apple.com/legal/internet-services/itunes/dev/stdeula/");
+    }
 }
 

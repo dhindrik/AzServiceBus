@@ -20,6 +20,7 @@ public class AppDelegate : MauiUIApplicationDelegate
     {
         base.FinishedLaunching(application, launchOptions);
         var service = Resolver.Resolve<ILogService>();
+
         try
         {
             UNUserNotificationCenter.Current.Delegate = new UserNotificationCenterDelegate();
@@ -29,12 +30,19 @@ public class AppDelegate : MauiUIApplicationDelegate
                 UNAuthorizationOptions.Badge |
                 UNAuthorizationOptions.Sound, async (approved, err) =>
                 {
-                    if (service != null)
+                    try
                     {
-                        if (err != null)
+                        if (service != null)
                         {
-                            await service!.LogException(new Exception(err.ToString()));
+                            if (err != null)
+                            {
+                                await service!.LogException(new Exception(err.ToString()));
+                            }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        await service!.LogException(ex);
                     }
                 });
 
@@ -42,8 +50,6 @@ public class AppDelegate : MauiUIApplicationDelegate
         }
         catch (Exception ex)
         {
-
-
             if (service != null)
             {
                 service.LogException(ex);
@@ -52,21 +58,31 @@ public class AppDelegate : MauiUIApplicationDelegate
 
         _ = Task.Run(async () =>
         {
-            var premiumService = Resolver.Resolve<IPremiumService>();
-
-            while (true)
+            try
             {
+                var premiumService = Resolver.Resolve<IPremiumService>();
+
+                while (true)
+                {
 #if DEBUG
-                await Task.Delay(10000);
+                    await Task.Delay(10000);
 #else
-                await Task.Delay(300000);
+                    await Task.Delay(300000);
 #endif
 
-                if (premiumService!.HasPremium())
-                {
-                    await service!.LogEvent("StartingAsyncTask");
+                    if (premiumService!.HasPremium())
+                    {
+                        await service!.LogEvent("StartingAsyncTask");
 
-                    await CheckForDeadLetters();
+                        await CheckForDeadLetters();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (service != null)
+                {
+                    await service.LogException(ex);
                 }
             }
         });

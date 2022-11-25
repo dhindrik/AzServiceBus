@@ -16,7 +16,7 @@
             </Button.ImageSource>
         </Button>
         <ActivityIndicator IsRunning="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" />
-        <Frame WidthRequest="600" HeightRequest="600" VerticalOptions="Center" HorizontalOptions="Center"
+        <Frame WidthRequest="600" HeightRequest="700" VerticalOptions="Center" HorizontalOptions="Center"
                BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}"
                IsVisible="{Binding IsNotBusy}">
             <Grid>
@@ -89,22 +89,35 @@
                         </VerticalStackLayout>
 
                         <Button Text="Restore purchase" />
+
+                        <ContentView HorizontalOptions="Center">
+                            <ContentView.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding OpenLicenseCommand, Mode=OneTime}" />
+                            </ContentView.GestureRecognizers>
+                            <Label Text="End user license agreement" TextDecorations="Underline" TextColor="{StaticResource Primary}" />
+                        </ContentView>
                     </VerticalStackLayout>
                 </Grid>
                 <Grid IsVisible="{Binding HasPremium}">
                     <VerticalStackLayout Spacing="20">
                         <Image HorizontalOptions="Center">
                             <Image.Source>
-                             <FontImageSource FontFamily="Icons"
+                                <FontImageSource FontFamily="Icons"
                                  Glyph="&#xF720;"
                                  Size="72"
                                  Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
                             </Image.Source>
                         </Image>
                         <Label Text="You are a premium user!" FontSize="Large" HorizontalTextAlignment="Center"/>
-                         <Label FontSize="Medium" HorizontalTextAlignment="Center" Text="To manage your subscriptions, go to System Settings." />
+                        <Label FontSize="Medium" HorizontalTextAlignment="Center" Text="To manage your subscriptions, go to System Settings." />
+                        <ContentView HorizontalOptions="Center">
+                            <ContentView.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding OpenLicenseCommand, Mode=OneTime}" />
+                            </ContentView.GestureRecognizers>
+                            <Label Text="End user license agreement" TextDecorations="Underline" TextColor="{StaticResource Primary}" />
+                        </ContentView>
                     </VerticalStackLayout>
-                   
+
                 </Grid>
             </Grid>
         </Frame>

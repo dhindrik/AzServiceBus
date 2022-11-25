@@ -23,26 +23,34 @@ public class FileLogService : ILogService
 
     private async Task Write(params string[] text)
     {
+        try
+        {
+
 #if DEBUG
-        var path = Path.Combine(FileSystem.AppDataDirectory, "AzServiceBus-DEBUG", "logs");
+            var path = Path.Combine(FileSystem.AppDataDirectory, "AzServiceBus-DEBUG", "logs");
 #else
-        var path = Path.Combine(FileSystem.AppDataDirectory, "logs");
+                var path = Path.Combine(FileSystem.AppDataDirectory, "logs");
 #endif
 
-        Directory.CreateDirectory(path);
+            Directory.CreateDirectory(path);
 
-        var filePath = Path.Combine(path, $"{DateTime.Now.ToShortDateString()}-log.txt");
+            var filePath = Path.Combine(path, $"{DateTime.Now.ToShortDateString()}-log.txt");
 
-        var lines = new List<string>()
+            var lines = new List<string>()
+                {
+                    $"---{DateTime.Now.ToString()}---",
+                };
+
+            lines.AddRange(text);
+            lines.Add("");
+
+            await File.AppendAllLinesAsync(filePath, lines);
+
+        }
+        catch (Exception)
         {
-            $"---{DateTime.Now.ToString()}---",
 
-        };
+        }
 
-        lines.AddRange(text);
-        lines.Add("");
-
-        await File.AppendAllLinesAsync(filePath, lines);
     }
 }
-
