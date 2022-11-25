@@ -34,6 +34,9 @@ public sealed partial class PremiumViewModel : ViewModel
 
                     YearPrice = items.Single(x => x.ProductId == Constants.Products.Yearly).LocalizedPrice;
                     MonthPrice = items.Single(x => x.ProductId == Constants.Products.Monthly).LocalizedPrice;
+
+                    BuyYearText = $"Purchase per year subscription ({YearPrice}/year)";
+                    BuyMonthText = $"Purchase per month subscription ({MonthPrice}/month)";
                 }
             }
         }
@@ -58,6 +61,12 @@ public sealed partial class PremiumViewModel : ViewModel
 
     [ObservableProperty]
     private string? monthPrice;
+
+    [ObservableProperty]
+    private string? buyMonthText = "Purchase per month subscription";
+    [ObservableProperty]
+    private string? buyYearText = "Purchase per year subscription";
+
     private readonly IPremiumService premiumService;
 
     [RelayCommand]

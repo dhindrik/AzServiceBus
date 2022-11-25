@@ -218,27 +218,35 @@ public class AppDelegate : MauiUIApplicationDelegate
             return;
 
 #if MACCATALYST
-
-
-        var content = new UNMutableNotificationContent();
-        content.Title = "New dead letters";
-        content.Body = "There are new dead letters in your Service Bus";
-        content.Badge = badgeNumber;
-
-        var trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(5, false);
-
-        var requestID = "deadLettersRequest";
-        var request = UNNotificationRequest.FromIdentifier(requestID, content, trigger);
-
-        UIApplication.SharedApplication.ApplicationIconBadgeNumber = 1;
-
-        UNUserNotificationCenter.Current.AddNotificationRequest(request, (err) =>
+        MainThread.BeginInvokeOnMainThread(async () =>
         {
-            if (err != null)
+            var settings = await UNUserNotificationCenter.Current.GetNotificationSettingsAsync();
+
+            if(settings.AuthorizationStatus != UNAuthorizationStatus.Authorized)
             {
-                var log = Resolver.Resolve<ILogService>();
-                log!.LogException(new Exception(err.ToString()));
+                return;
             }
+
+            var content = new UNMutableNotificationContent();
+            content.Title = "New dead letters";
+            content.Body = "There are new dead letters in your Service Bus";
+            content.Badge = badgeNumber;
+
+            var trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(5, false);
+
+            var requestID = "deadLettersRequest";
+            var request = UNNotificationRequest.FromIdentifier(requestID, content, trigger);
+
+            UIApplication.SharedApplication.ApplicationIconBadgeNumber = 1;
+
+            UNUserNotificationCenter.Current.AddNotificationRequest(request, (err) =>
+            {
+                if (err != null)
+                {
+                    var log = Resolver.Resolve<ILogService>();
+                    log!.LogException(new Exception(err.ToString()));
+                }
+            });
         });
 #endif
     }

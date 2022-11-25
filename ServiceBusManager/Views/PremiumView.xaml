@@ -84,8 +84,8 @@
                             </Label>
                             <Label Text="Get premium for 1 month or 1 year. Subscription will auto-renew." />
 
-                            <Button Text="Purchase 1 month subscription" Command="{Binding BuyLifetimeCommand}" />
-                            <Button Text="Purchase 1 year subscription" Command="{Binding BuyYearlyCommand}" />
+                            <Button Text="{Binding BuyMonthText}" Command="{Binding BuyLifetimeCommand}" />
+                            <Button Text="{Binding BuyYearText}" Command="{Binding BuyYearlyCommand}" />
                         </VerticalStackLayout>
 
                         <Button Text="Restore purchase" />
