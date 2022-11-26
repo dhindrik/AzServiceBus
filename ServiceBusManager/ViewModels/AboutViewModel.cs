@@ -6,45 +6,89 @@ public sealed partial class AboutViewModel : ViewModel
     {
         AppVersion = $"{VersionTracking.CurrentVersion}.{VersionTracking.CurrentBuild}";
 #if DEBUG
-       LogPath = Path.Combine(FileSystem.AppDataDirectory, "AzServiceBus-DEBUG", "logs");
+       logPath = Path.Combine(FileSystem.AppDataDirectory, "AzServiceBus-DEBUG", "logs");
 #else
-       LogPath = Path.Combine(FileSystem.AppDataDirectory, "logs");
+       logPath = Path.Combine(FileSystem.AppDataDirectory, "logs");
 #endif
+
+        this.logService = logService;
     }
 
     [ObservableProperty]
     private string appVersion = string.Empty;
 
-    [ObservableProperty]
     private string logPath = string.Empty;
+    private readonly ILogService logService;
 
     [RelayCommand]
     private async Task Source()
     {
-        var uri = new Uri("https://github.com/dhindrik/AzServiceBus");
-        await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+        try
+        {
+
+            var uri = new Uri("https://github.com/dhindrik/AzServiceBus");
+            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+        }
+        catch (Exception ex)
+        {
+            await logService.LogException(ex);
+        }
     }
 
     [RelayCommand]
     private async Task Privacy()
     {
-        var uri = new Uri("https://github.com/dhindrik/AzServiceBus/blob/main/PrivacyPolicy.md");
-        await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+        try
+        {
+
+            var uri = new Uri("https://github.com/dhindrik/AzServiceBus/blob/main/PrivacyPolicy.md");
+            await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+        }
+        catch (Exception ex)
+        {
+            await logService.LogException(ex);
+        }
     }
     [RelayCommand]
-    private async Task CopyLogPath()
+    private async Task DownloadLog()
     {
-        await Clipboard.Default.SetTextAsync(LogPath);
+        try
+        {
 
-        var toast = Toast.Make("Log path has been copied to clipboard");
+            var files = Directory.GetFiles(logPath);
 
-        await toast.Show();
+            var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+            foreach (var file in files)
+            {
+                var text = await File.ReadAllTextAsync(file);
+
+                var fileName = Path.GetFileName(file);
+
+                var newPath = Path.Combine(userFolder, "Downloads", fileName);
+
+                await File.WriteAllTextAsync(newPath, text);
+            }
+        }
+        catch (Exception ex)
+        {
+            await logService.LogException(ex);
+        }
+
+
     }
 
     [RelayCommand]
     private async Task OpenLicense()
     {
-        await Browser.OpenAsync("https://www.apple.com/legal/internet-services/itunes/dev/stdeula/");
+        try
+        {
+            await Browser.OpenAsync("https://www.apple.com/legal/internet-services/itunes/dev/stdeula/");
+        }
+        catch (Exception ex)
+        {
+            await logService.LogException(ex);
+        }
     }
 }
 

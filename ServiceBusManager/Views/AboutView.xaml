@@ -24,22 +24,9 @@
                         <Label Text="App version" FontSize="Medium" />
                         <Label HorizontalOptions="End" Text="{Binding AppVersion}" />
                     </Grid>
-                    <Label Text="Path to log files:" FontSize="Medium" FontAttributes="Bold" />
-                    <Grid ColumnDefinitions="*,Auto">
-                        <Label Text="{Binding LogPath}" VerticalOptions="Center" />
-                        <Image Grid.Column="1" VerticalOptions="Center">
-                            <Image.Source>
-                                <FontImageSource FontFamily="Icons"
-                                    Glyph="&#xEEB3;"
-                                                 Color="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
-                                                 Size="18"/>
-                            </Image.Source>
-                            <Image.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding CopyLogPathCommand}" />
-
-                            </Image.GestureRecognizers>
-                        </Image>
-                    </Grid>
+                    <Label Text="Application logs" FontSize="Header" FontAttributes="Bold" />
+                    <Label Text="Please attach the application logs when reporting bugs to the developer."/>
+                    <Button Text="Save logs to download folder" Command="{Binding DownloadLogCommand}" />
                 </VerticalStackLayout>
                 <HorizontalStackLayout Spacing="20" VerticalOptions="End" HorizontalOptions="End">
                     <Button Text="EULA" Command="{Binding OpenLicenseCommand}" />
