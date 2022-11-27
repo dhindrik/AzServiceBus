@@ -54,12 +54,13 @@ public sealed partial class AboutViewModel : ViewModel
     {
         try
         {
+            IsBusy = true;
 
             var files = Directory.GetFiles(logPath);
 
             var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
-            foreach (var file in files)
+            foreach (var file in files.Where(x => x.EndsWith("log.txt")))
             {
                 var text = await File.ReadAllTextAsync(file);
 
@@ -73,9 +74,15 @@ public sealed partial class AboutViewModel : ViewModel
         catch (Exception ex)
         {
             await logService.LogException(ex);
+
+            var failedToast = Toast.Make("Downloading logs failed.");
+            await failedToast.Show();
         }
 
+        IsBusy = false;
 
+        var toast = Toast.Make("Downloading logs completed!");
+        await toast.Show();
     }
 
     [RelayCommand]

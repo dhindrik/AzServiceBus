@@ -27,6 +27,10 @@
                     <Label Text="Application logs" FontSize="Header" FontAttributes="Bold" />
                     <Label Text="Please attach the application logs when reporting bugs to the developer."/>
                     <Button Text="Save logs to download folder" Command="{Binding DownloadLogCommand}" />
+                    <HorizontalStackLayout Padding="10" Spacing="10" IsVisible="{Binding IsBusy}">
+                        <ActivityIndicator IsRunning="True" />
+                        <Label Text="Downloading logs" />
+                    </HorizontalStackLayout>
                 </VerticalStackLayout>
                 <HorizontalStackLayout Spacing="20" VerticalOptions="End" HorizontalOptions="End">
                     <Button Text="EULA" Command="{Binding OpenLicenseCommand}" />
