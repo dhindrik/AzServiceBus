@@ -27,9 +27,9 @@ public class FileLogService : ILogService
         {
 
 #if DEBUG
-            var path = Path.Combine(FileSystem.AppDataDirectory, "AzServiceBus-DEBUG", "logs");
+            var path = Path.Combine(FileSystem.AppDataDirectory, "AzServiceBus-DEBUG", "Logs");
 #else
-                var path = Path.Combine(FileSystem.AppDataDirectory, "logs");
+                var path = Path.Combine(FileSystem.AppDataDirectory, "Logs");
 #endif
 
             Directory.CreateDirectory(path);

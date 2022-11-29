@@ -1,4 +1,8 @@
-﻿namespace ServiceBusManager.ViewModels;
+﻿#if MACCATALYST
+using Foundation;
+#endif
+
+namespace ServiceBusManager.ViewModels;
 
 public sealed partial class AboutViewModel : ViewModel
 {
@@ -6,9 +10,9 @@ public sealed partial class AboutViewModel : ViewModel
     {
         AppVersion = $"{VersionTracking.CurrentVersion}.{VersionTracking.CurrentBuild}";
 #if DEBUG
-       logPath = Path.Combine(FileSystem.AppDataDirectory, "AzServiceBus-DEBUG", "logs");
+       logPath = Path.Combine(FileSystem.AppDataDirectory, "AzServiceBus-DEBUG", "Logs");
 #else
-       logPath = Path.Combine(FileSystem.AppDataDirectory, "logs");
+        logPath = Path.Combine(FileSystem.AppDataDirectory, "Logs");
 #endif
 
         this.logService = logService;
@@ -58,7 +62,7 @@ public sealed partial class AboutViewModel : ViewModel
 
             var files = Directory.GetFiles(logPath);
 
-            var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            var folderPath = GetFolderPath();
 
             foreach (var file in files.Where(x => x.EndsWith("log.txt")))
             {
@@ -66,10 +70,12 @@ public sealed partial class AboutViewModel : ViewModel
 
                 var fileName = Path.GetFileName(file);
 
-                var newPath = Path.Combine(userFolder, "Downloads", fileName);
+                var newPath = Path.Combine(folderPath, fileName);
 
                 await File.WriteAllTextAsync(newPath, text);
             }
+
+            IsBusy = false;
         }
         catch (Exception ex)
         {
@@ -77,9 +83,10 @@ public sealed partial class AboutViewModel : ViewModel
 
             var failedToast = Toast.Make("Downloading logs failed.");
             await failedToast.Show();
-        }
 
-        IsBusy = false;
+            IsBusy = false;
+            return;
+        }
 
         var toast = Toast.Make("Downloading logs completed!");
         await toast.Show();
@@ -96,6 +103,17 @@ public sealed partial class AboutViewModel : ViewModel
         {
             await logService.LogException(ex);
         }
+    }
+
+    private string GetFolderPath()
+    {
+#if MACCATALYST
+        var userDir = NSFileManager.GetHomeDirectory(NSFileManager.FullUserName);
+        return Path.Combine(userDir, "Downloads");
+#endif
+
+
+        return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
     }
 }
 
