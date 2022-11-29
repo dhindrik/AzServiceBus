@@ -64,7 +64,17 @@ public sealed partial class AboutViewModel : ViewModel
 
             var folderPath = GetFolderPath();
 
-            foreach (var file in files.Where(x => x.EndsWith("log.txt")))
+            files = files.Where(x => x.EndsWith("log.txt")).ToArray();
+
+            if(files.Length == 0)
+            {
+                var noLogsToast = Toast.Make("No logs found.");
+                await noLogsToast.Show();
+
+                return;
+            }
+
+            foreach (var file in files)
             {
                 var text = await File.ReadAllTextAsync(file);
 

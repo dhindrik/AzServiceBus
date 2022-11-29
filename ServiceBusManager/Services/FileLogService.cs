@@ -47,9 +47,10 @@ public class FileLogService : ILogService
             await File.AppendAllLinesAsync(filePath, lines);
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-
+            Console.Write(ex);
+            Console.WriteLine();
         }
 
     }
