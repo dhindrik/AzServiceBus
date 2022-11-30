@@ -18,7 +18,7 @@ No data will be sent to the app developer or third parties.
 If you have found a bug or have an idea about the app can be better, please create an [issue](https://github.com/dhindrik/AzServiceBus/issues).
 
 ## Platforms
-* Mac (in review)
+* Mac, https://apps.apple.com/se/app/azservicebus/id6444410679
 * Windows (coming)
 * iOS/iPadOS (coming)
 * Android (coming)
