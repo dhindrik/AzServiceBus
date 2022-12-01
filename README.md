@@ -9,6 +9,7 @@ AzServiceBus is a service bus explorer for Azure Service Bus.
 * Edit messages in queues and topics.
 * See an overview of all dead letters in your service buses.
 * Resend messages.
+* Create message and add them to a queue or topic.
 * Get notifications when messages are added to a dead letter queue.
 * Save connection strings in a secure way for easy access to your service buses.
 
