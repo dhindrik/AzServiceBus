@@ -1,4 +1,6 @@
-﻿namespace ServiceBusManager.ViewModels;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace ServiceBusManager.ViewModels;
 
 public sealed partial class MessageViewModel : ViewModel
 {
@@ -22,7 +24,10 @@ public sealed partial class MessageViewModel : ViewModel
     private string? displayName;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsNotDeadLetter))]
     private bool isDeadLetter;
+
+    public bool IsNotDeadLetter => !IsDeadLetter;
 
     [ObservableProperty]
     private bool isSubscription;
@@ -240,6 +245,9 @@ public sealed partial class MessageViewModel : ViewModel
         {
             IsBusy = true;
 
+            selectedMessages.Clear();
+            UpdateSelectedMessages();
+
             await LoadAndUpdate();
 
         }
@@ -249,6 +257,17 @@ public sealed partial class MessageViewModel : ViewModel
         }
 
         IsBusy = false;
+    }
+
+    [RelayCommand]
+    public void New()
+    {
+        AddAction($"update_messages", () =>
+        {
+            MainThread.BeginInvokeOnMainThread(async () => await Refresh());
+        });
+
+        RunAction($"open_{nameof(NewMessageView)}");
     }
 }
 

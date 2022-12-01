@@ -1,4 +1,7 @@
-﻿namespace ServiceBusManager.Views;
+﻿using System.Reflection.Metadata;
+using CommunityToolkit.Maui.Views;
+
+namespace ServiceBusManager.Views;
 
 public partial class MainView
 {
@@ -12,6 +15,9 @@ public partial class MainView
 
         viewModel.AddAction($"open_{nameof(MessageDetailsView)}", ShowPopup);
         viewModel.AddAction($"close_{nameof(MessageDetailsView)}", ClosePopup);
+
+        viewModel.AddAction($"open_{nameof(NewMessageView)}", ShowNewPopup);
+        viewModel.AddAction($"close_{nameof(NewMessageView)}", CloseNewPopup);
 
         viewModel.AddAction($"open_premium", ShowPremiumPopup);
         viewModel.AddAction($"close_premium", ClosePremiumPopup);
@@ -34,7 +40,6 @@ public partial class MainView
         if (MessageDetails.BindingContext is MessageDetailsViewModel detailsViewModel)
         {
             MainThread.BeginInvokeOnMainThread(() => detailsViewModel.LoadMessage(parameter.Message, parameter.IsDeadLetter, parameter.TopicName));
-            Task.Run(async () => await logService.LogPageView(nameof(MessageDetailsView)));
         }
 
         Popup.ScaleTo(1, 250, Easing.SinOut);
@@ -50,7 +55,35 @@ public partial class MainView
 
     private void ClosePopup()
     {
+
         Popup.ScaleTo(0, 250, Easing.SinOut);
+        var animation = new Animation((value) =>
+        {
+            Backdrop.Opacity = value;
+        }, 0.8, 0);
+
+        Backdrop.Animate("Opacity", animation, easing: Easing.SinOut);
+    }
+
+    private void ShowNewPopup()
+    {
+
+        if (NewMessage.BindingContext is NewMessageViewModel viewModel)
+        {
+            MainThread.BeginInvokeOnMainThread(async() => await viewModel.Initialize());
+        }
+        NewPopup.ScaleTo(1, 250, Easing.SinOut);
+        var animation = new Animation((value) =>
+        {
+            Backdrop.Opacity = value;
+        }, 0, 0.8);
+        Backdrop.Animate("Opacity", animation, easing: Easing.SinOut);
+    }
+
+    private void CloseNewPopup()
+    {
+
+        NewPopup.ScaleTo(0, 250, Easing.SinOut);
         var animation = new Animation((value) =>
         {
             Backdrop.Opacity = value;

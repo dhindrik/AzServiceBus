@@ -10,6 +10,7 @@ public interface IServiceBusService
     Task<List<ServiceBusReceivedMessage>> PeekDeadLetter(string queueName, string? topicName = null);
     Task AddToDeadLetter(string queueName, ServiceBusReceivedMessage message, string? topicName = null);
     Task Resend(string queueName, ServiceBusReceivedMessage message, string? editedBody = null, string? topicName = null);
+    Task Send(string queueName, ServiceBusMessage message, string? topicName = null);
     Task<string> GetNamepspace();
     Task Remove(string queueName, bool isDeadLetter, ServiceBusReceivedMessage message, string? topicName = null);
 

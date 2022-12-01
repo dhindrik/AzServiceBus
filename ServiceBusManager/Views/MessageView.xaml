@@ -11,16 +11,19 @@
           Padding="20">
         <Grid IsVisible="{Binding IsNotBusy}" RowDefinitions="Auto, Auto, Auto,*" RowSpacing="20">
             <Grid>
-            <HorizontalStackLayout HorizontalOptions="Start" VerticalOptions="Center">
-                <Label 
+                <HorizontalStackLayout HorizontalOptions="Start" VerticalOptions="Center">
+                    <Label 
                     Text="{Binding DisplayName}"
                     FontSize="Subtitle"/>
 
-                <Label 
+                    <Label 
             Text=" -  Dead Letters"
             FontSize="Subtitle" IsVisible="{Binding IsDeadLetter}"/>
-            </HorizontalStackLayout>
-                <Button HorizontalOptions="End" VerticalOptions="Center" Command="{Binding RefreshCommand}" Text="Refresh"/>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout HorizontalOptions="End" Spacing="20">
+                    <Button IsVisible="{Binding IsNotDeadLetter}" HorizontalOptions="End" VerticalOptions="Center" Command="{Binding NewCommand}" Text="Create message"/>
+                    <Button HorizontalOptions="End" VerticalOptions="Center" Command="{Binding RefreshCommand}" Text="Refresh"/>
+                </HorizontalStackLayout>
             </Grid>
             <VerticalStackLayout Grid.Row="1" Spacing="10" IsVisible="{Binding HasSelectedMessages}" >
                 <Label>
@@ -59,27 +62,27 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="sb:ServiceBusReceivedMessage">
                         <ContentView Padding="0,5" HorizontalOptions="Start">
-                        <Frame BorderColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}"
+                            <Frame BorderColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}"
                                BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}"
                                 HorizontalOptions="Start"
-                                Padding="10"> 
-                        <Grid ColumnDefinitions="20,300,200,200,120,100" RowSpacing="20" ColumnSpacing="20" Padding="0,0" HorizontalOptions="Start">
-                            <controls:CustomCheckBox Color="{StaticResource Primary}" VerticalOptions="Center" ToggleCommand="{Binding Source={x:Reference Messages}, Path=BindingContext.ToggleMessageSelectedCommand}" />
-                            <Label Grid.Column="1" Text="{Binding MessageId, Mode=OneTime}" VerticalOptions="Center" />
-                            <Label Grid.Column="2" Text="{Binding EnqueuedTime, Mode=OneTime}" VerticalOptions="Center" />
-                            <Label Grid.Column="3" Text="{Binding DeliveryCount, Mode=OneTime}" HorizontalOptions="Center" VerticalOptions="Center" />
-                            <Label Grid.Column="4" Text="{Binding Subject, Mode=OneTime}" VerticalOptions="Center" />
-                            
-                            <Button Grid.Column="5" Text="Open" Command="{Binding Source={x:Reference Messages}, Path=BindingContext.ShowDetailsCommand, Mode=OneTime}" CommandParameter="{Binding}" />
+                                Padding="10">
+                                <Grid ColumnDefinitions="20,300,200,200,120,100" RowSpacing="20" ColumnSpacing="20" Padding="0,0" HorizontalOptions="Start">
+                                    <controls:CustomCheckBox Color="{StaticResource Primary}" VerticalOptions="Center" ToggleCommand="{Binding Source={x:Reference Messages}, Path=BindingContext.ToggleMessageSelectedCommand}" />
+                                    <Label Grid.Column="1" Text="{Binding MessageId, Mode=OneTime}" VerticalOptions="Center" />
+                                    <Label Grid.Column="2" Text="{Binding EnqueuedTime, Mode=OneTime}" VerticalOptions="Center" />
+                                    <Label Grid.Column="3" Text="{Binding DeliveryCount, Mode=OneTime}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Label Grid.Column="4" Text="{Binding Subject, Mode=OneTime}" VerticalOptions="Center" />
 
-                        </Grid>
+                                    <Button Grid.Column="5" Text="Open" Command="{Binding Source={x:Reference Messages}, Path=BindingContext.ShowDetailsCommand, Mode=OneTime}" CommandParameter="{Binding}" />
+
+                                </Grid>
                             </Frame>
-                            </ContentView>
+                        </ContentView>
                     </DataTemplate>
 
                 </CollectionView.ItemTemplate>
 
-            </CollectionView>            
+            </CollectionView>
         </Grid>
 
         <ActivityIndicator IsRunning="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" />

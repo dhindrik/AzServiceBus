@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:vm="clr-namespace:ServiceBusManager.ViewModels"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ServiceBusManager.Views.NewMessageView" x:DataType="vm:NewMessageViewModel">
+    <Grid>
+        <ActivityIndicator IsRunning="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" />
+    <Grid x:Name="Main" Padding="20" RowDefinitions="Auto,*" RowSpacing="20" IsVisible="{Binding IsNotBusy}">
+
+        
+        
+        <Label Text="Create message" FontSize="Subtitle" VerticalOptions="Start" />
+        <Button Command="{Binding CloseCommand}" VerticalOptions="Start" HorizontalOptions="End" Text="X" />
+        <ScrollView Grid.Row="1" Margin="-20">
+            <VerticalStackLayout Spacing="20" Padding="20">
+                <Label Text="Content-Type" />
+                <Picker ItemsSource="{Binding ContentTypes}" SelectedItem="{Binding ContentType}" />
+                <Label Text="Message" />
+                <ContentView Padding="10"
+                     BackgroundColor="{AppThemeBinding Dark={StaticResource InputBackgroundDark}, Light={StaticResource InputBackgroundLight}}">
+
+                    <Editor Text="{Binding Message}" Placeholder="Message content" HeightRequest="300" />
+                </ContentView>
+                <Label Text="Properties" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Properties}" Spacing="20">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:PropertyViewModel">
+                            <Grid ColumnDefinitions="*,*,30, 30" ColumnSpacing="20">
+                                <Entry Text="{Binding Key}" Placeholder="Key" />
+                                <Entry Grid.Column="1" Text="{Binding Value}" Placeholder="Value" />
+                                  <ContentView Grid.Column="2" ToolTipProperties.Text="Remove property">
+                                       <ContentView.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={x:Reference Main}, Path=BindingContext.RemovePropertyCommand}" CommandParameter="{Binding}" />
+
+                                    </ContentView.GestureRecognizers>
+                                    <Image>
+                                        <Image.Source>
+                                            <FontImageSource FontFamily="Icons"
+                                                             Glyph="&#xF34E;"
+                                                             Size="22"
+                                                             Color="#B32449" />
+                                        </Image.Source>
+
+                                    </Image>
+
+                                </ContentView>
+                                <ContentView Grid.Column="3" IsVisible="{Binding IsLast}" ToolTipProperties.Text="Add one more property">
+                                    <ContentView.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={x:Reference Main}, Path=BindingContext.AddPropertyCommand}" />
+
+                                    </ContentView.GestureRecognizers>
+                                    <Image>
+                                        <Image.Source>
+                                            <FontImageSource FontFamily="Icons"
+                                                             Glyph="&#xF107;"
+                                                             Size="22"
+                                                             Color="{StaticResource Primary}" />
+                                        </Image.Source>
+
+                                    </Image>
+
+                                </ContentView>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>                    
+                </VerticalStackLayout>
+                <Button Text="Send" Command="{Binding SendCommand}" />
+            </VerticalStackLayout>
+        </ScrollView>
+            </Grid>
+    </Grid>
+</ContentView>
+

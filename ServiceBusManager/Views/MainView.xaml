@@ -99,6 +99,11 @@
             <views:MessageDetailsView x:Name="MessageDetails" />
         </Grid>
 
+         <Grid x:Name="NewPopup" WidthRequest="540" Margin="0,100" BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}" Scale="0">
+
+           <views:NewMessageView x:Name="NewMessage" />
+        </Grid>
+
         <Grid x:Name="PremiumPopup" Padding="20" VerticalOptions="Center" HorizontalOptions="Center" BackgroundColor="{AppThemeBinding Light={StaticResource ContentBackgroundLight}, Dark={StaticResource ContentBackgroundDark}}" Scale="0">
 
              <VerticalStackLayout Spacing="20">

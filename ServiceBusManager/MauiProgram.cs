@@ -2,6 +2,7 @@
 global using System.Windows.Input;
 global using System.Collections.ObjectModel;
 global using System.Linq;
+global using System.Runtime.CompilerServices; 
 
 global using Microsoft.AspNetCore.Components.WebView.Maui;
 
@@ -38,9 +39,6 @@ public static class MauiProgram
             .UseTinyMvvm()
             .UseMauiCommunityToolkit()
             .RegisterServices();
-            
-
-        RegisterRoutes();
 
         builder.Services.AddMauiBlazorWebView();
 #if DEBUG
@@ -78,17 +76,15 @@ public static class MauiProgram
         builder.Services.AddSingleton<AboutViewModel>();
         builder.Services.AddSingleton<SubscriptionsViewModel>();
         builder.Services.AddSingleton<DeadLettersViewModel>();
+        builder.Services.AddSingleton<NewMessageViewModel>();
+
+        builder.Services.AddTransient<PropertyViewModel>();
 
         builder.Services.AddSingleton<ConnectView>();
         builder.Services.AddSingleton<MainView>();
         builder.Services.AddSingleton<PremiumView>();
         builder.Services.AddSingleton<AboutView>();
         builder.Services.AddSingleton<DeadLettersView>();
-    }
-
-	private static void RegisterRoutes()
-    {
-		
     }
 }
 

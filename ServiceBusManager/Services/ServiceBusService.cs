@@ -301,9 +301,39 @@ public sealed class ServiceBusService : IServiceBusService
 
             await receiver.CompleteMessageAsync(oldMessage);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            await logService.LogException(ex);
+        }
+    }
 
+    public async Task Send(string queueName, ServiceBusMessage message, string? topicName = null)
+    {
+        try
+        {
+            if (client == null)
+            {
+                throw new Exception("You must run init first");
+            }
+
+           
+            ServiceBusSender sender;
+
+            if (topicName != null)
+            {
+                sender = client.CreateSender(topicName);
+            }
+            else
+            {
+                sender = client.CreateSender(queueName);
+            }
+
+
+            await sender.SendMessageAsync(message);
+        }
+        catch (Exception ex)
+        {
+            await logService.LogException(ex);
         }
     }
 

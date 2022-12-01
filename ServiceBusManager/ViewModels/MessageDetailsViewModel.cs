@@ -84,11 +84,11 @@ public sealed partial class MessageDetailsViewModel : ViewModel
 
         if(isEditMode)
         {
-
+            Task.Run(async () => await serviceBusService.Resend(currentQueueOrTopic, Item,Body, topicName));
         }
         else
         {
-            Task.Run(async () => await serviceBusService.Resend(currentQueueOrTopic, Item, topicName));
+            Task.Run(async () => await serviceBusService.Resend(currentQueueOrTopic, Item,null, topicName));
         }
         
 
